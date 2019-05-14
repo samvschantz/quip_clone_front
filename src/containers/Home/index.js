@@ -6,7 +6,7 @@ class Home extends Component {
     gameId: ''
   }
 
-  checkName = () => {
+  inputHandler = () => {
     const nameInput = document.getElementById('name-input');
     let name = nameInput.value;
     if(name.length > 2){
@@ -17,14 +17,14 @@ class Home extends Component {
     }
   }
 
-  inputHandler = () => {
-    this.checkName();
-  }
-
   newGame = () => {
   }
 
+  checkName = () => {
+  }
+
   joinGame = () => {
+    this.checkName();
   }
 
   render(){
