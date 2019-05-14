@@ -15,15 +15,30 @@ class Home extends Component {
   // both become inactive if their standards are not met
 
   inputHandler = (e, input) => {
-    let name = e.target.value;
+    let userInput = e.target.value;
     let button = document.getElementById(input + '-button');
-    if(name.length > 2 && input === 'new-game'){
+    if(userInput.length > 2 && input === 'new-game'){
       button.classList.remove("noClick");
-    } else if(name.length === 10 && input === 'join-game'){
+      this.setState({ user: userInput });
+    } else if(userInput.length === 10 && input === 'join-game'){
       button.classList.remove("noClick");
+      this.setState({ gameId: userInput })
     } else {
       button.classList.add("noClick");
     }
+  }
+
+  newGame = () => {
+    const gameId    = shortid.generate();
+    const gameOwner = this.state.user;
+    this.props.firebase.database().ref('games/' + gameId).set({
+        gameOwner : gameOwner,
+        gameState : { started: false }
+    });
+  }
+
+  joinGame = () => {
+
   }
 
   render(){
