@@ -16,11 +16,11 @@ class Home extends Component {
 
   inputHandler = (e, input) => {
     let userInput = e.target.value;
-    let button = document.getElementById(input + '-button');
+    let button    = document.getElementById(input + '-button');
     if(userInput.length > 2 && input === 'new-game'){
       button.classList.remove("noClick");
       this.setState({ user: userInput });
-    } else if(userInput.length === 10 && input === 'join-game'){
+    } else if(userInput.length === 9 && input === 'join-game' && this.state.user.length > 2){
       button.classList.remove("noClick");
       this.setState({ gameId: userInput })
     } else {
@@ -29,15 +29,31 @@ class Home extends Component {
   }
 
   newGame = () => {
-    const gameId    = shortid.generate();
-    const gameOwner = this.state.user;
-    this.props.firebase.database().ref('games/' + gameId).set({
+    const gameId      = shortid.generate();
+    const gameOwner   = this.state.user;
+    const dbReference = this.props.firebase.database().ref('games/' + gameId);
+    dbReference.set({
         gameOwner : gameOwner,
         gameState : { started: false }
     });
   }
 
   joinGame = () => {
+    let gameId        = this.state.gameId;
+    const dbReference = this.props.firebase.database().ref('games/');
+    const errorBlock  = document.getElementById('error-block'); 
+
+    dbReference.once('value')
+      .then((snapshot) =>{
+        if(!snapshot.hasChild(gameId)){
+          //no game with this game id
+          return Promise.reject();
+        } else {
+
+        }
+      }).catch(() =>{
+        errorBlock.innerHTML = 'Does not match any current games. Please check your game id and try again';
+      })
 
   }
 
