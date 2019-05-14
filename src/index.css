@@ -25,14 +25,6 @@ body{
 	height: 200px;
 }
 
-#game-id-input{
-	display: none;
-}
-
-.show#game-id-input{
-	display: block;
-}
-
 .noClick{
 	opacity:0.5;
 	pointer-events: none;

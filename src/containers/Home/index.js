@@ -14,30 +14,27 @@ class Home extends Component {
   // When a code 10 chars long is entered for game id and there is a name longer than 2 chars that becomes active
   // both become inactive if their standards are not met
 
-  nameInputHandler = (e) => {
+  inputHandler = (e, input) => {
     let name = e.target.value;
-    let buttons = Array.from(document.getElementsByTagName('button'));
-    if(name.length > 2){
-      buttons.forEach(function(button){ 
-        button.classList.remove("noClick");
-      })
+    let button = document.getElementById(input + '-button');
+    if(name.length > 2 && input === 'new-game'){
+      button.classList.remove("noClick");
+    } else if(name.length === 10 && input === 'join-game'){
+      button.classList.remove("noClick");
     } else {
-      buttons.forEach(function(button){ 
-        button.classList.add("noClick");
-      })
+      button.classList.add("noClick");
     }
   }
-
 
   render(){
     return(
       <div className="start-screen">
         <p>Enter a name to get started</p>
         <p>Name & Game ID required to join existing game.</p>
-        <input id="name-input" placeholder="Name required to start or join game" onInput={this.nameInputHandler} />
+        <input id="name-input" placeholder="Name required to start or join game" onInput={(e) => this.inputHandler(e, 'new-game')} />
         <button className="noClick" id="new-game-button" onClick={this.newGame} >New Game</button>
+        <input id="game-id-input" placeholder="Game ID required to join game" onInput={(e) => this.inputHandler(e, 'join-game')} />
         <button className="noClick" id="join-game-button" onClick={this.joinGame} >Join Game</button>
-        <input id="game-id-input" placeholder="Game ID required to join game" />
         <p id="error-block"></p>
       </div>
     )
