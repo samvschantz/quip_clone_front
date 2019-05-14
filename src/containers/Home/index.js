@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { withFirebase } from '../../firebase';
+import shortid from 'shortid';
 
 class Home extends Component {
   state = {
-    gameId: ''
+    gameId: '',
+    user: ''
   }
 
   inputHandler = () => {
@@ -14,12 +16,20 @@ class Home extends Component {
       buttons.forEach(function(button){
         button.disabled = false;
       });
+      this.setState({ user: name });
     }
   }
 
   newGame = () => {
+    const gameId    = shortid.generate();
+    const gameOwner = this.state.user;
+    this.props.firebase.database().ref('games/' + gameId).set({
+        gameOwner : gameOwner,
+        gameState : { started: false }
+    });
   }
 
+  //Checks whether this name already exists for the given game
   checkName = () => {
   }
 
@@ -31,11 +41,11 @@ class Home extends Component {
     return(
       <div>
         <input id="name-input" placeholder="Name Required" onInput={this.inputHandler} />
-        <button onClick={this.newGame} disabled>New Game</button>
-        <button onClick={this.joinGame} disabled>Join Game</button>
+        <button onClick={this.newGame} >New Game</button>
+        <button onClick={this.joinGame} >Join Game</button>
       </div>
     )
   }
 }
 
-export default Home;
+export default withFirebase(Home);
