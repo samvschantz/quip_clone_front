@@ -10,13 +10,15 @@ class Home extends Component {
 
   inputHandler = () => {
     const nameInput = document.getElementById('name-input');
+    const newGameButton = document.getElementById('new-game-button');
+    const joinGameButton = document.getElementById('join-game-button');
+        
     let name = nameInput.value;
+      
     if(name.length > 2){
-      let buttons = Array.from(document.getElementsByTagName('button'));
-      buttons.forEach(function(button){
-        button.disabled = false;
-      });
-      this.setState({ user: name });
+
+    } else {
+
     }
   }
 
@@ -39,10 +41,11 @@ class Home extends Component {
 
   render(){
     return(
-      <div>
-        <input id="name-input" placeholder="Name Required" onInput={this.inputHandler} />
-        <button onClick={this.newGame} >New Game</button>
-        <button onClick={this.joinGame} >Join Game</button>
+      <div className="start-screen">
+        <input id="name-input" placeholder="Name required to start or join game" onInput={this.inputHandler} />
+        <input id="game-id-input" placeholder="Game ID required to join game" onInput={this.inputHandler} />
+        <button id="new-game-button" onClick={this.newGame} >New Game</button>
+        <button id="join-game-button" onClick={this.joinGame} >Join Game</button>
       </div>
     )
   }
