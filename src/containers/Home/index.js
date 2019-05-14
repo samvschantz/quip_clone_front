@@ -31,27 +31,40 @@ class Home extends Component {
   newGame = () => {
     const gameId      = shortid.generate();
     const gameOwner   = this.state.user;
-    const dbReference = this.props.firebase.database().ref('games/' + gameId);
-    dbReference.set({
+    const gameReference = this.props.firebase.database().ref('games/' + gameId);
+    gameReference.set({
         gameOwner : gameOwner,
         gameState : { started: false }
     });
   }
 
   joinGame = () => {
-    let gameId        = this.state.gameId;
-    const dbReference = this.props.firebase.database().ref('games/');
-    const errorBlock  = document.getElementById('error-block'); 
+    const gameId        = this.state.gameId;
+    const user          = this.state.user;
+    const gameReference = this.props.firebase.database().ref('games/');
+    const errorBlock    = document.getElementById('error-block'); 
 
-    dbReference.once('value')
-      .then((snapshot) =>{
+    //checking that there is a game & that players name is not already in use
+    gameReference.once('value')
+      .then((snapshot) => {
         if(!snapshot.hasChild(gameId)){
           //no game with this game id
           return Promise.reject();
         } else {
-
+          const playersReference = this.props.firebase.database().ref('games/' + gameId + '/players/');
+          playersReference.once('value')
+            .then((snapshot) => {
+              if(snapshot.hasChild(user)){
+                //name already in use
+                return Promise.reject();
+              }
+            })
+            .catch(() => {
+              errorBlock.innerHTML = 'Name already taken please enter a new name';
+            })
         }
-      }).catch(() =>{
+      })
+      .catch(() => {
         errorBlock.innerHTML = 'Does not match any current games. Please check your game id and try again';
       })
 
