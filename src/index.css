@@ -11,3 +11,30 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+body{
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+}
+
+.start-screen{
+	text-align: center;
+	margin: calc(25% - 200px) auto 0px auto;
+	width: 200px;
+	height: 200px;
+}
+
+#game-id-input{
+	display: none;
+}
+
+.show#game-id-input{
+	display: block;
+}
+
+.noClick{
+	opacity:0.5;
+	pointer-events: none;
+	user-select: none;
+}
