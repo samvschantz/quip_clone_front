@@ -2,52 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 
 function StartGame(props) {
- const [startGame, setStartGame] = useState(false);
-    const [players, setData] = useState([]);
 
-    const user    = props.user;
-    const gameId  = props.gameId;
-    let userData  = {};
+    const user        = props.user;
+    const gameId      = props.gameId;
+    const users       = props.users;
+    const players     = Object.keys(users);
+    const dbReference = props.firebase.database();
+    let userData      = {};
 
     useEffect(() => {
-        props.firebase.database().ref('games/' + gameId + '/players').once('value')
-        .then((snapshot) => {
-            userData = (snapshot.val());
-        })
-        .then(()=> {
-            let players = Object.keys(userData);
-            setData(players)
-        })
-
-        props.firebase.database().ref('games/' + gameId + '/gameState').once('value')
-        .then((snapshot) => {
-            return snapshot.val();
-        })
-        .then((data)=> {
-            if(data.started) {
-                setStartGame(true);
-            }
-        })
-    })
+      console.log('this');
+    }, [])
 
     const startGameHandler = () => {
-        props.firebase.database().ref('games/' + gameId).update({
-            gameState: { started: true }
-        })
+      console.log('that');
     }
 
     return (
         <>
-        { !startGame ?
-            <>
-                <h1>Players</h1>
-                <p>Room: {gameId}</p>
-                {players.map((player, index) => (
-                    <span key={index}>{player}</span>
-                ))}
-                <button onClick={startGameHandler}>Start Game</button>
-            </>
-        : <StartGame gameId={gameId} user={user}/>}
+          <h1>Players</h1>
+          {
+            for(user in users){
+              <span></span>
+            }
+          }
+          {
+            players.map((player, index) => (
+              <span key={index}>{player}</span>
+            ))
+          }
         </>
     )
 }

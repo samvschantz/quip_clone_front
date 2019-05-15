@@ -30,7 +30,7 @@ function WaitingRoom(props) {
                 setStartGame(true);
             }
         })
-    })
+    }, [])
 
     const startGameHandler = () => {
         dbReference.ref('games/' + gameId).update({
@@ -49,7 +49,7 @@ function WaitingRoom(props) {
                 ))}
                 <button onClick={startGameHandler}>Start Game</button>
             </>
-        : <StartGame gameId={gameId} user={user}/>}
+        : <StartGame gameId={gameId} user={user} users={users}/>}
         </>
     )
 }
