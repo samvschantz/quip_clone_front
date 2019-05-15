@@ -3,35 +3,34 @@ import { withFirebase } from '../../firebase';
 
 function StartGame(props) {
 
+    const [playersPoints, setPlayersDisplay] = useState([]);
+
     const user        = props.user;
     const gameId      = props.gameId;
     const users       = props.users;
-    const players     = Object.keys(users);
-    const dbReference = props.firebase.database();
-    let userData      = {};
 
     useEffect(() => {
-      console.log('this');
+      pointsDisplay();
     }, [])
 
+    const pointsDisplay = () => {
+      let rows = [];
+      for(let user in users){
+        rows.push(user + ' has ' + users[user].points + ' points'); 
+      }
+      setPlayersDisplay(rows);
+    }
+
     const startGameHandler = () => {
-      console.log('that');
     }
 
     return (
-        <>
+        <div>
           <h1>Players</h1>
-          {
-            for(user in users){
-              <span></span>
-            }
-          }
-          {
-            players.map((player, index) => (
+          {playersPoints.map((player, index) => (
               <span key={index}>{player}</span>
-            ))
-          }
-        </>
+          ))}
+        </div>
     )
 }
 

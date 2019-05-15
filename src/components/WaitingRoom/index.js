@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
+// import Users from './Users'
 
 function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
     const [players, setData]        = useState([]);
+    const [usersObj, setUsers]      = useState({});
 
     const user        = props.user;
     const gameId      = props.gameId;
@@ -12,30 +14,32 @@ function WaitingRoom(props) {
     let users         = {};
 
     useEffect(() => {
-      dbReference.ref('games/' + gameId + '/players').once('value')
-        .then((snapshot) => {
-          users = snapshot.val();
-        })
-        .then(() => {
-          let players = Object.keys(users);
-          setData(players);
-        })
+        const usersRef = dbReference.ref('games/' + gameId + '/players');
+        usersRef.once('value')
+            .then((snapshot) => {
+              users = snapshot.val();
+              setUsers(users);
+            })
+            .then(() => {
+              let players = Object.keys(users);
+              setData(players);
+            })
 
-      dbReference.ref('games/' + gameId + '/gameState').once('value')
-        .then((snapshot) => {
-            return snapshot.val();
-        })
-        .then((data)=> {
-            if(data.started) {
-                setStartGame(true);
-            }
-        })
+        usersRef.orderByChild('sentFrom')
+            .startAt('client')
+            .endAt('client')
+            .on('child_added', handlePacket);
     }, [])
+
+    const handlePacket = (snapshot) => {
+        console.log(snapshot.val())
+    }
 
     const startGameHandler = () => {
         dbReference.ref('games/' + gameId).update({
             gameState: { started: true }
         })
+        setStartGame(true);
     }
 
     return (
@@ -49,7 +53,7 @@ function WaitingRoom(props) {
                 ))}
                 <button onClick={startGameHandler}>Start Game</button>
             </>
-        : <StartGame gameId={gameId} user={user} users={users}/>}
+        : <StartGame gameId={gameId} user={user} users={usersObj}/>}
         </>
     )
 }
