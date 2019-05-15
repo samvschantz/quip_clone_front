@@ -29,20 +29,27 @@ class Home extends Component {
   }
 
   newGame = () => {
-    const gameId      = shortid.generate();
-    const gameOwner   = this.state.user;
-    const gameReference = this.props.firebase.database().ref('games/' + gameId);
+    const gameId            = shortid.generate();
+    const gameOwner         = this.state.user;
+    const dbReference       = this.props.firebase.database()
+    const gameReference     = dbReference.ref('games/' + gameId);
+    const gameOwnerReference  = dbReference.ref('games/' + gameId + '/players/' + gameOwner);
     gameReference.set({
-        gameOwner : gameOwner,
-        gameState : { started: false }
+      gameOwner : gameOwner,
+      gameState : { started: false }
     });
+    gameOwnerReference.set({
+      playerId  : shortid.generate(),
+      gameOwner : true,
+      points    : 0
+    })
   }
 
   joinGame = () => {
     const gameId        = this.state.gameId;
     const user          = this.state.user;
     const gameReference = this.props.firebase.database().ref('games/');
-    const errorBlock    = document.getElementById('error-block'); 
+    const errorBlock    = document.getElementById('error-block');
 
     //checking that there is a game & that players name is not already in use
     gameReference.once('value')
@@ -51,12 +58,18 @@ class Home extends Component {
           //no game with this game id
           return Promise.reject();
         } else {
-          const playersReference = this.props.firebase.database().ref('games/' + gameId + '/players/');
-          playersReference.once('value')
+          const playerReference = this.props.firebase.database().ref('games/' + gameId + '/players/' + user);
+          playerReference.once('value')
             .then((snapshot) => {
               if(snapshot.hasChild(user)){
                 //name already in use
                 return Promise.reject();
+              } else {
+                playerReference.set({
+                  playerId  : shortid.generate(),
+                  gameOwner : false,
+                  points    : 0
+                })
               }
             })
             .catch(() => {
