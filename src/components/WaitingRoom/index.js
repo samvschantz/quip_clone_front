@@ -29,6 +29,13 @@ function WaitingRoom(props) {
 
     const handlePacket = (snapshot) => {
         console.log('this was hit');
+        console.log(players);
+        //we need to pull data from one level up b/c no names currently
+        let newPlayer = snapshot.val().playerId;
+        if(!players.includes(newPlayer)){
+            let newPlayers = [...players, snapshot.val()];
+            setData(newPlayers);        
+        }
         console.log(snapshot.val());
         //hmm it looks like when child is added we only get added child
         //so we have to check who is in users and only add child if not already there!
