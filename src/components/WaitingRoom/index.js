@@ -11,10 +11,11 @@ function WaitingRoom(props) {
     const user        = props.user;
     const gameId      = props.gameId;
     const dbReference = props.firebase.database();
+    const usersRef    = dbReference.ref('games/' + gameId + '/players');
     let users         = {};
+    // console.log(props.firebase.auth().currentUser);
 
     useEffect(() => {
-        const usersRef = dbReference.ref('games/' + gameId + '/players');
         usersRef.once('value')
             .then((snapshot) => {
               users = snapshot.val();
@@ -24,16 +25,16 @@ function WaitingRoom(props) {
               let players = Object.keys(users);
               setData(players);
             })
-
-        usersRef.orderByChild('sentFrom')
-            .startAt('client')
-            .endAt('client')
-            .on('child_added', handlePacket);
     }, [])
 
     const handlePacket = (snapshot) => {
-        console.log(snapshot.val())
+        console.log('this was hit');
+        console.log(snapshot.val());
+        //hmm it looks like when child is added we only get added child
+        //so we have to check who is in users and only add child if not already there!
     }
+
+    usersRef.on('child_added', handlePacket);
 
     const startGameHandler = () => {
         dbReference.ref('games/' + gameId).update({
