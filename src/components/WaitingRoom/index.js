@@ -5,7 +5,7 @@ import StartGame from '../StartGame';
 
 function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
-    const [players, setData]        = useState([]);
+    const [players, setData]        = useState([props.user]);
     const [usersObj, setUsers]      = useState({});
 
     const user        = props.user;
@@ -28,22 +28,21 @@ function WaitingRoom(props) {
     }, [])
 
     const handlePacket = (snapshot) => {
-        console.log('this was hit');
-        console.log(players);
-        //we need to pull data from one level up b/c no names currently
-        let newPlayer = snapshot.val().playerId;
+        let newPlayerData   = snapshot.val();
+        let newPlayer       = newPlayerData.playerName;
         if(!players.includes(newPlayer)){
-            let newPlayers = [...players, snapshot.val()];
-            setData(newPlayers);        
+            let newPlayers      = [...players, newPlayer];
+            setData(newPlayers); 
+            console.log('do we ever actually get here?') 
+            let newPlayersData  = {...usersObj, [newPlayer]: newPlayerData}
+            setUsers(newPlayersData);       
         }
-        console.log(snapshot.val());
-        //hmm it looks like when child is added we only get added child
-        //so we have to check who is in users and only add child if not already there!
     }
 
     usersRef.on('child_added', handlePacket);
 
     const startGameHandler = () => {
+        console.log(usersObj);
         dbReference.ref('games/' + gameId).update({
             gameState: { started: true }
         })

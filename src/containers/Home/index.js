@@ -41,7 +41,8 @@ class Home extends Component {
     gameOwnerReference.set({
       playerId  : shortid.generate(),
       gameOwner : true,
-      points    : 0
+      points    : 0,
+      playerName: gameOwner
     })
     this.setState({
       gameStarted : true,
@@ -73,7 +74,8 @@ class Home extends Component {
                 playerReference.set({
                   playerId  : shortid.generate(),
                   gameOwner : false,
-                  points    : 0
+                  points    : 0,
+                  playerName: user
                 })
                 this.setState({ gameStarted: true });
               }
