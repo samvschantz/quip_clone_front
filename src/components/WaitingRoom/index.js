@@ -12,6 +12,7 @@ function WaitingRoom(props) {
     const gameId      = props.gameId;
     const dbReference = props.firebase.database();
     const usersRef    = dbReference.ref('games/' + gameId + '/players');
+    const gameRef     = dbReference.ref('games/' + gameId + '/gameState');
     let users         = {};
     // console.log(props.firebase.auth().currentUser);
 
@@ -35,6 +36,7 @@ function WaitingRoom(props) {
             setData(newPlayers); 
             console.log('do we ever actually get here?') 
             let newPlayersData  = {...usersObj, [newPlayer]: newPlayerData}
+            console.log(newPlayersData);
             setUsers(newPlayersData);       
         }
     }
@@ -42,12 +44,15 @@ function WaitingRoom(props) {
     usersRef.on('child_added', handlePacket);
 
     const startGameHandler = () => {
+        console.log('inside startGameHandler');
         console.log(usersObj);
         dbReference.ref('games/' + gameId).update({
             gameState: { started: true }
         })
         setStartGame(true);
     }
+
+    gameRef.on('child_changed', startGameHandler);
 
     return (
         <>
