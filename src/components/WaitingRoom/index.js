@@ -34,8 +34,6 @@ function WaitingRoom(props) {
     usersRef.on('child_added', handlePacket);
     
     const startGameHandler = () => {
-        console.log('inside startGameHandler');
-        console.log(usersObj);
         dbReference.ref('games/' + gameId).update({
             gameState: { started: true }
         })
@@ -45,18 +43,18 @@ function WaitingRoom(props) {
     gameRef.on('child_changed', startGameHandler);
 
     return (
-        <>
+        <div>
         { !startGame ?
-            <>
+            <div>
                 <h1>Players</h1>
                 <p>Room: {gameId}</p>
                 {players.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
                 <button onClick={startGameHandler}>Start Game</button>
-            </>
+            </div>
         : <StartGame gameId={gameId} user={user} users={usersObj}/>}
-        </>
+        </div>
     )
 }
 
