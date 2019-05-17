@@ -16,14 +16,9 @@ function WaitingRoom(props) {
     const gameRef     = dbReference.ref('games/' + gameId + '/gameState');
 
     let users         = {};
-    // console.log(props.firebase.auth().currentUser);
 
     useEffect(() => {
     }, [])
-    //FIRST and second FIRST is the game creator and one to press start game
-    //When both are in waiting room both should have usersObj in state
-
-    //OBVIOUSLY react re-renders when setting state in useEffect()
 
     const handlePacket = (snapshot) => {
         let newPlayer       = snapshot.val().playerName;
@@ -31,23 +26,13 @@ function WaitingRoom(props) {
         if(!players.includes(newPlayer)){
             let newPlayers      = [...players, newPlayer];
             setData(newPlayers);
-        }
+            let newPlayersData  = {...newPlayerData, usersObj};
+            setUsers(newPlayersData);
+            }
     }
 
     usersRef.on('child_added', handlePacket);
     
-    // console.log(usersObj);
-    // console.log(Object.keys(usersObj).length);
-    // if(Object.keys(usersObj).length > 1){
-    //     console.log('this should run')
-    //     usersRef.once('value')
-    //         .then((snapshot) => {
-    //           users = snapshot.val();
-    //           setUsers(users);
-    //           console.log(users);
-    //         })
-    // }
-
     const startGameHandler = () => {
         console.log('inside startGameHandler');
         console.log(usersObj);
