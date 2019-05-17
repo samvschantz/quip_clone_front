@@ -28,7 +28,7 @@ function WaitingRoom(props) {
             setData(newPlayers);
             let newPlayersData  = {...newPlayerData, usersObj};
             setUsers(newPlayersData);
-            }
+        }   
     }
 
     usersRef.on('child_added', handlePacket);

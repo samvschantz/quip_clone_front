@@ -15,6 +15,7 @@ function StartGame(props) {
 
     const pointsDisplay = () => {
       let rows = [];
+      console.log(users);
       for(let user in users){
         rows.push(user + ' has ' + users[user].points + ' points'); 
       }
