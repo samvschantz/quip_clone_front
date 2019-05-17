@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
 // import Users from './Users'
@@ -8,33 +8,42 @@ function WaitingRoom(props) {
     const [players, setData]        = useState([props.user]);
     const [usersObj, setUsers]      = useState({});
 
-    const user        = props.user;
-    const gameId      = props.gameId;
-    const dbReference = props.firebase.database();
-    const usersRef    = dbReference.ref('games/' + gameId + '/players');
-    const gameRef     = dbReference.ref('games/' + gameId + '/gameState');
+    const user          = props.user;
+    const gameId        = props.gameId;
+    const dbReference   = props.firebase.database();
+    const gameRef       = dbReference.ref('games/' + gameId);
+    const usersRef      = dbReference.ref('games/' + gameId + '/players');
+    const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
+
+    useEffect(() => {
+        usersRef.once('value')
+            .then((snapshot) => {
+                handlePacket(snapshot);
+            })
+    }, [])
 
     const handlePacket = (snapshot) => {
-        let newPlayer       = snapshot.val().playerName;
-        let newPlayerData   = snapshot.val();
-        if(!players.includes(newPlayer)){
-            let newPlayers      = [...players, newPlayer];
-            setData(newPlayers);
-            let newPlayersData  = {...newPlayerData, usersObj};
-            setUsers(newPlayersData);
-        }   
+        let allPlayers      = snapshot.val();
+        let allPlayersArr   = Object.keys(allPlayers);
+        setData(allPlayersArr);
     }
 
-    usersRef.on('child_added', handlePacket);
-    
+    gameRef.on('child_changed', handlePacket);
+
     const startGameHandler = () => {
-        dbReference.ref('games/' + gameId).update({
-            gameState: { started: true }
-        })
-        setStartGame(true);
+        usersRef.once('value')
+            .then((snapshot) => {
+                setUsers(snapshot.val())
+            })
+            .then(() => {
+                gameRef.update({
+                    gameState: { started: true }
+                })
+                setStartGame(true);
+            })
     }
 
-    gameRef.on('child_changed', startGameHandler);
+    gameStateRef.on('child_changed', startGameHandler);
 
     return (
         <div>
