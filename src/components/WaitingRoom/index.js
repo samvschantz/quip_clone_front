@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
 // import Users from './Users'
@@ -7,18 +7,12 @@ function WaitingRoom(props) {
     const [startGame, setStartGame] = useState(false);
     const [players, setData]        = useState([props.user]);
     const [usersObj, setUsers]      = useState({});
-    let [, updateState] = React.useState();
 
     const user        = props.user;
     const gameId      = props.gameId;
     const dbReference = props.firebase.database();
     const usersRef    = dbReference.ref('games/' + gameId + '/players');
     const gameRef     = dbReference.ref('games/' + gameId + '/gameState');
-
-    let users         = {};
-
-    useEffect(() => {
-    }, [])
 
     const handlePacket = (snapshot) => {
         let newPlayer       = snapshot.val().playerName;
