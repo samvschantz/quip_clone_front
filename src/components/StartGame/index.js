@@ -27,7 +27,13 @@ function StartGame(props) {
     }, [])
 
     const triggerTurnChange = () => {
-      setTurnChange(true);
+      gameStateRef.once('value')
+        .then((snapshot) => {
+          console.log('got to triggerTurnChange');
+          whosTurn = snapshot.val().turn;
+          console.log(whosTurn);
+          setTurnChange(true);
+        })
     }
 
     const moveTurn = () => {
@@ -97,7 +103,7 @@ function StartGame(props) {
                 <span key={index}>{player}</span>
             ))}
           </div>
-          :<Round turn={turn} gameId={gameId} user={user} users={users} />
+          :<Round turn={turn} gameId={gameId} user={user} users={users} whosTurn={whosTurn}/>
           }
         </div>
     )

@@ -4,6 +4,7 @@ import StartGame from '../StartGame';
 
 function Round(props) {
 
+	console.log(props.whosTurn);
 
     return (
         <div>
