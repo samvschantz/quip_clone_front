@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withFirebase } from '../../firebase';
+import StartGame from '../StartGame';
 
 function Round(props) {
 
@@ -21,10 +22,7 @@ function Round(props) {
         <div>
 	       {!roundDone ?  
           <div>
-            <h1>Players</h1>
-            {playersPoints.map((player, index) => (
-                <span key={index}>{player}</span>
-            ))}
+            <h1></h1>
           </div>
           :<StartGame turn={turn} gameId={gameId} user={user} users={users} whosTurn={whosTurn}/>
           }
