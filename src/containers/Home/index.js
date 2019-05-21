@@ -36,7 +36,10 @@ class Home extends Component {
     const gameOwnerReference  = dbReference.ref('games/' + gameId + '/players/' + gameOwner);
     gameReference.set({
       gameOwner : gameOwner,
-      gameState : { started: false }
+      gameState : { 
+        started : false,
+        turn    : 0 
+      }
     });
     gameOwnerReference.set({
       playerId  : shortid.generate(),
