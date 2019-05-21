@@ -17,7 +17,7 @@ function StartGame(props) {
     const playerNames   = Object.keys(users);
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
-    let currentTurn            = 0;
+    let currentTurn     = 0;
     let whosTurn        = '';
 
     useEffect(() => {
@@ -30,8 +30,7 @@ function StartGame(props) {
       gameStateRef.once('value')
         .then((snapshot) => {
           console.log('got to triggerTurnChange');
-          whosTurn = snapshot.val().turn;
-          console.log(whosTurn);
+          whosTurn = snapshot.val().whosTurn;
           setTurnChange(true);
         })
     }
@@ -96,7 +95,7 @@ function StartGame(props) {
 
     return (
         <div>
-          {! turnChanged ?  
+          {!turnChanged ?  
           <div>
             <h1>Players</h1>
             {playersPoints.map((player, index) => (
