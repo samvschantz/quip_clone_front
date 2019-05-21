@@ -26,8 +26,11 @@ function StartGame(props) {
       }
     }, [])
 
+    const triggerTurnChange = () => {
+      setTurnChange(true);
+    }
+
     const moveTurn = () => {
-      console.log('did we at least get here???')
       gameStateRef.once('value')
         .then((snapshot) => {
           currentTurn = snapshot.val().turn;
@@ -39,7 +42,6 @@ function StartGame(props) {
             let whosTurn = '';
             shuffledPlayers.length > 0 ? whosTurn = shuffledPlayers[currentTurn]: whosTurn = '';
             if(whosTurn !== ''){
-              console.log('did gameOwner get here?')
               gameStateRef.update({
                 turn      : 1,
                 turnOrder : shuffledPlayers,
@@ -47,7 +49,7 @@ function StartGame(props) {
               })
               setTurn(1);
               setPlayersTurn(whosTurn);
-              setTurnChange(true);
+              triggerTurnChange();
             }
           } else if(userInfo.gameOwner){
             currentTurn++;
@@ -58,9 +60,9 @@ function StartGame(props) {
               turn      : turn,
               whosTurn  : whosTurn
             })
-            setTurnChange(true);
+            triggerTurnChange();
           }
-          console.log('did non game owners get here?')
+          triggerTurnChange();
         })
     }
 
@@ -70,6 +72,7 @@ function StartGame(props) {
         rows.push(user + ' has ' + users[user].points + ' points'); 
       }
       setPlayersDisplay(rows);
+      //this sets  length of display before next turn - could also just have a ready? button
       window.setTimeout(moveTurn, 500);
     }
 
@@ -94,7 +97,7 @@ function StartGame(props) {
                 <span key={index}>{player}</span>
             ))}
           </div>
-          :<Round turn={turn} />
+          :<Round turn={turn} gameId={gameId} user={user} users={users} />
           }
         </div>
     )
