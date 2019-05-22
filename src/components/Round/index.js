@@ -5,7 +5,8 @@ import Prompts from '../../prompts/prompts.json';
 
 function Round(props) {
 
-    const [roundDone, finishRound]  = useState(false);
+    const [roundDone, finishRound]    = useState(false);
+    const [displayPrompt, setDisplay] = useState('');
 
 	  const user          = props.user;
     const gameId        = props.gameId;
@@ -18,27 +19,31 @@ function Round(props) {
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
     const apiUrl        = 'https://crhallberg.com/cah';
 
-    let displayPrompt = '';
 
-    if(users[user].gameOwner && displayPrompt === ''){
+    const showPrompt = () => {
+      gameStateRef.once('value')
+        .then((snapshot) => {
+          console.log(snapshot.val())
+          console.log(snapshot.val().prompt)
+          setDisplay(snapshot.val().prompt);
+        })
+    }
+
+    if(!users[user].gameOwner){
+      gameStateRef.on('child_changed', showPrompt);
+    } else if(users[user].gameOwner && displayPrompt === ''){
       let promptIndex = Math.floor(Math.random() * Prompts.length);
       console.log(Prompts[promptIndex]);
       console.log(Prompts[promptIndex].text);
       let Prompt = Prompts[promptIndex].text;
+      console.log(Prompts.length);
       Prompts.splice(promptIndex, 1);
+      console.log(Prompts.length);
       gameStateRef.update({
         prompt: Prompt
       })
+      setDisplay(Prompt);
     }
-
-    const showPrompt = () => {
-      gameStateRef.once((snapshot) => {
-        console.log(snapshot.val().prompt)
-        displayPrompt = snapshot.val().prompt;
-      })
-    }
-
-    gameStateRef.on('child_changed', showPrompt);
 
     return (
         <div>
