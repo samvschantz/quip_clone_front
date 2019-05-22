@@ -26,10 +26,14 @@ function Round(props) {
       setTextDisplay(snapshot.val());
     }
 
+    const handleCard = (snapshot) => {
+      console.log(snapshot.val());
+    }
+
     gameStateRef.once('value')
       .then((snapshot) => {
         gameStateRef.on('child_changed', showPrompt);
-        cardsRef.on('child_changed')
+        cardsRef.on('child_changed', handleCard);
       })
       .then(() => {
         if(users[user].gameOwner && !promptChosen){
@@ -50,9 +54,11 @@ function Round(props) {
     
     const editCard = () => {
       cardsRef.once('value')
-      .then((snapshot) => {
-        console.log(snapshot.val());
-      })
+        .then((snapshot) => {
+          let cardText = snapshot.val().cardToPlay;
+          const input = document.getElementsByTagName('input');
+          input.text = cardText;
+        })
     }
 
     const inputHandler = (e) => {

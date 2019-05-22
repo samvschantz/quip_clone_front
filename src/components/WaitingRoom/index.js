@@ -45,12 +45,31 @@ function WaitingRoom(props) {
 
     gameStateRef.on('child_changed', startGameHandler);
 
+    const copyId = () => {
+        let id = document.getElementById('id').innerHTML;
+        id = id.substring(6, 16)
+        var textarea = document.createElement("textarea");
+        textarea.textContent = id;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy"); // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+
     return (
         <div>
         { !startGame ?
             <div>
                 <h1>Players</h1>
-                <p>Room: {gameId}</p>
+                <p id='id'>Room: {gameId}</p>
+                <button onClick={copyId}>Copy game Id</button>
                 {players.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
