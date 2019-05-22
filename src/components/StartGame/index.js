@@ -43,14 +43,14 @@ function StartGame(props) {
           //If it is before the first turn and the user is the gameOwner set the turn order
           if(currentTurn === 0 && userInfo.gameOwner){
             shuffledPlayers = shuffle(playerNames);
-            setTurnOrder(shuffledPlayers);   
+            setTurnOrder(shuffledPlayers);
             let whosTurn = '';
             shuffledPlayers.length > 0 ? whosTurn = shuffledPlayers[currentTurn]: whosTurn = '';
             if(whosTurn !== ''){
               gameStateRef.update({
                 turn      : 1,
                 turnOrder : shuffledPlayers,
-                whosTurn  : whosTurn 
+                whosTurn  : whosTurn
               })
               setTurn(1);
               setPlayersTurn(whosTurn);
@@ -74,7 +74,7 @@ function StartGame(props) {
     const pointsDisplay = () => {
       let rows = [];
       for(let user in users){
-        rows.push(user + ' has ' + users[user].points + ' points'); 
+        rows.push(user + ' has ' + users[user].points + ' points');
       }
       setPlayersDisplay(rows);
       //this sets  length of display before next turn - could also just have a ready? button
@@ -95,7 +95,7 @@ function StartGame(props) {
 
     return (
         <div>
-          {!turnChanged ?  
+          {!turnChanged ?
           <div>
             <h1>Players</h1>
             {playersPoints.map((player, index) => (
