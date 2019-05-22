@@ -5,8 +5,10 @@ import Prompts from '../../prompts/prompts.json';
 
 function Round(props) {
 
-    const [roundDone, finishRound]    = useState(false);
-    const [displayPrompt, setDisplay] = useState('');
+    const [roundDone, finishRound]        = useState(false);
+    const [promptChosen, choosePrompt]    = useState(false);
+    const [displayPrompt, setTextDisplay] = useState('');
+    const [displayPick, setPickDisplay]   = useState(''); 
 
 	  const user          = props.user;
     const gameId        = props.gameId;
@@ -19,31 +21,52 @@ function Round(props) {
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
     const apiUrl        = 'https://crhallberg.com/cah';
 
-
-    const showPrompt = () => {
-      gameStateRef.once('value')
-        .then((snapshot) => {
-          console.log(snapshot.val())
-          console.log(snapshot.val().prompt)
-          setDisplay(snapshot.val().prompt);
-        })
+    const showPrompt = (snapshot) => {
+      setTextDisplay(snapshot.val());
     }
 
-    if(!users[user].gameOwner){
-      gameStateRef.on('child_changed', showPrompt);
-    } else if(users[user].gameOwner && displayPrompt === ''){
-      let promptIndex = Math.floor(Math.random() * Prompts.length);
-      console.log(Prompts[promptIndex]);
-      console.log(Prompts[promptIndex].text);
-      let Prompt = Prompts[promptIndex].text;
-      console.log(Prompts.length);
-      Prompts.splice(promptIndex, 1);
-      console.log(Prompts.length);
-      gameStateRef.update({
-        prompt: Prompt
+    gameStateRef.once('value')
+      .then((snapshot) => {
+        console.log('this happens first');
+        gameStateRef.on('child_changed', showPrompt);
       })
-      setDisplay(Prompt);
-    }
+      .then(() => {
+        console.log('then this happens...')
+        if(users[user].gameOwner && !promptChosen){
+          let promptIndex = Math.floor(Math.random() * Prompts.length);
+          let Prompt = Prompts[promptIndex].text;
+          Prompts.splice(promptIndex, 1);
+          gameStateRef.update({
+            prompt: Prompt
+          })
+          setTextDisplay(Prompt);
+          choosePrompt(true);
+        }
+      })
+
+    // const showPrompt = () => {
+    //   gameStateRef.once('value')
+    //     .then((snapshot) => {
+    //       console.log(snapshot.val())
+    //       console.log(snapshot.val().prompt)
+    //       setPickDisplay(snapshot.val().prompt);
+    //     })
+    // }
+
+    // if(!users[user].gameOwner){
+    //   console.log('do we add this listener??');
+    //   gameStateRef.on('child_changed', showPrompt);
+    // } else if(users[user].gameOwner && displayPrompt === ''){
+    //   let promptIndex = Math.floor(Math.random() * Prompts.length);
+    //   let Prompt = Prompts[promptIndex];
+    //   Prompts.splice(promptIndex, 1);
+    //   gameStateRef.update({
+    //     promptText: Prompt.text,
+    //     promptPick: Prompt.pick
+    //   })
+    //   setTextDisplay(Prompt.text);
+    //   setPickDisplay(Prompt.pick);
+    // }
 
     return (
         <div>

@@ -38,7 +38,8 @@ class Home extends Component {
       gameOwner : gameOwner,
       gameState : { 
         started : false,
-        turn    : 0 
+        turn    : 0,
+        prompt  : '' 
       }
     });
     gameOwnerReference.set({
