@@ -27,11 +27,9 @@ function Round(props) {
 
     gameStateRef.once('value')
       .then((snapshot) => {
-        console.log('this happens first');
         gameStateRef.on('child_changed', showPrompt);
       })
       .then(() => {
-        console.log('then this happens...')
         if(users[user].gameOwner && !promptChosen){
           let promptIndex = Math.floor(Math.random() * Prompts.length);
           let Prompt = Prompts[promptIndex].text;
@@ -44,36 +42,18 @@ function Round(props) {
         }
       })
 
-    // const showPrompt = () => {
-    //   gameStateRef.once('value')
-    //     .then((snapshot) => {
-    //       console.log(snapshot.val())
-    //       console.log(snapshot.val().prompt)
-    //       setPickDisplay(snapshot.val().prompt);
-    //     })
-    // }
-
-    // if(!users[user].gameOwner){
-    //   console.log('do we add this listener??');
-    //   gameStateRef.on('child_changed', showPrompt);
-    // } else if(users[user].gameOwner && displayPrompt === ''){
-    //   let promptIndex = Math.floor(Math.random() * Prompts.length);
-    //   let Prompt = Prompts[promptIndex];
-    //   Prompts.splice(promptIndex, 1);
-    //   gameStateRef.update({
-    //     promptText: Prompt.text,
-    //     promptPick: Prompt.pick
-    //   })
-    //   setTextDisplay(Prompt.text);
-    //   setPickDisplay(Prompt.pick);
-    // }
-
     return (
         <div>
-	       {!roundDone ?
+	       {
+          !roundDone ?
           <div>
             <h1>{displayPrompt}</h1>
-            <p>{playersTurn} is judging this round!</p>
+            {
+              playersTurn !== user ? <input type='text' placeholder='Fill in the blank' /> : <p>You're judging!</p>
+            }
+           {
+              playersTurn !== user ? <p>{playersTurn} is judging this round!</p> : ''
+            }
           </div>
           :<StartGame turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
           }
