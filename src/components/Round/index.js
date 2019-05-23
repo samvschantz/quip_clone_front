@@ -6,10 +6,10 @@ import Prompts from '../../prompts/prompts.json';
 function Round(props) {
 
     const [roundDone, finishRound]        = useState(false);
-    const [promptChosen, choosePrompt]    = useState(false);
+    const [judging, finishPlay]           = useState(false);
     const [displayPrompt, setTextDisplay] = useState('');
     const [cardToPlay, playCard]          = useState('');
-    const [allReady, setReady]            = useState(false); 
+    const [numPlayed, addCard]            = useState(0);
 
 	  const user          = props.user;
     const gameId        = props.gameId;
@@ -21,9 +21,9 @@ function Round(props) {
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
     const readyRef      = dbReference.ref('games/' + gameId + '/promptReady');
-    const userReadyRef  = dbReference.ref('games/' + gameId + '/gameState/promptReady/' + user);
-    const cardsRef      = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
-    const apiUrl        = 'https://crhallberg.com/cah';
+    const cardsRef      = dbReference.ref('games/' + gameId + '/gameState/cards');
+    const userCardsRef  = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
+    // const apiUrl        = 'https://crhallberg.com/cah';
 
     useEffect(() => {      
       gameStateListener();
@@ -38,12 +38,12 @@ function Round(props) {
 
     const gameStateListener = () => {
       readyRef.on('child_added', waitForAll);
+      cardsRef.on('child_added', handleCard);
       setPrompt();
     }
 
     const setPrompt = () => {
-      console.log('setPrompt');
-      if(users[user].gameOwner && !promptChosen){
+      if(users[user].gameOwner){
         let promptIndex = Math.floor(Math.random() * Prompts.length);
         let Prompt = Prompts[promptIndex].text;
         Prompts.splice(promptIndex, 1);
@@ -64,7 +64,8 @@ function Round(props) {
               proceed = false;
             }
           }
-          if(proceed = true){
+          if(proceed === true){
+            readyRef.off();
             showPrompt();
           }
         })
@@ -77,15 +78,25 @@ function Round(props) {
     }
 
     const handleCard = (snapshot) => {
-      // console.log(snapshot.val());
+      let cardSubmitted = snapshot.val().cardToPlay;
+      cardsRef.once('value')
+        .then((snapshot) => {
+          console.log(snapshot.val());
+          let playedObj = snapshot.val();
+          addCard(Object.keys(playedObj).length);
+          if(numPlayed === playerNames.length - 1){
+            cardsRef.off();
+            console.log('we should head to judging now')
+          }
+        })
     }
 
     const submitCard = () => {
-      cardsRef.update({cardToPlay});
+      userCardsRef.update({cardToPlay});
     }
     
     const editCard = () => {
-      cardsRef.once('value')
+      userCardsRef.once('value')
         .then((snapshot) => {
           let cardText = snapshot.val().cardToPlay;
           const input = document.getElementsByTagName('input');
@@ -102,22 +113,28 @@ function Round(props) {
         <div>
 	       {
           !roundDone ?
-          <div>
-            <h1>{displayPrompt}</h1>
-            {
-              playersTurn !== user ? 
+            !judging ?    
               <div>
-                <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} /> 
-                <button onClick={submitCard} >Play</button>
-                <button onClick={editCard} >Edit</button>
+                <h1>{displayPrompt}</h1>
+                {
+                  playersTurn !== user ? 
+                  <div>
+                    <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} /> 
+                    <button onClick={submitCard} >Play</button>
+                    <button onClick={editCard} >Edit</button>
+                  </div>
+                  : 
+                  <p>You're judging!</p>
+                }
+               {
+                  playersTurn !== user ? <p>{playersTurn} is judging this round!</p> : ''
+                }
+                <p>{numPlayed}/{playerNames.length - 1} cards have been played.</p>
               </div>
-              : 
-              <p>You're judging!</p>
-            }
-           {
-              playersTurn !== user ? <p>{playersTurn} is judging this round!</p> : ''
-            }
-          </div>
+            :
+              <div>
+
+              </div>
           :<StartGame turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
           }
         </div>

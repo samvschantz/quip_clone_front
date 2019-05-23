@@ -14,7 +14,6 @@ function WaitingRoom(props) {
     const gameRef       = dbReference.ref('games/' + gameId);
     const usersRef      = dbReference.ref('games/' + gameId + '/players');
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
-    const readyRef      = dbReference.ref('games/' + gameId + '/promptReady')
 
     useEffect(() => {
         usersRef.once('value')
