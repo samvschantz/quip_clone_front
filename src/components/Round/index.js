@@ -25,23 +25,24 @@ function Round(props) {
     const cardsRef      = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
     const apiUrl        = 'https://crhallberg.com/cah';
 
-    useEffect(() => {
+    useEffect(() => {      
       gameStateListener();
     }, [])
 
-    const showPrompt = (snapshot) => {
-      if(allReady === true){
-        setTextDisplay(snapshot.val())
-      }
+    const showPrompt = () => {
+      gameStateRef.once('value')
+        .then((snapshot) => {
+          setTextDisplay(snapshot.val().prompt)
+        })
     }
 
     const gameStateListener = () => {
-      gameStateRef.on('child_changed', showPrompt);
-      readyRef.on('child_changed', waitForAll);
+      readyRef.on('child_added', waitForAll);
       setPrompt();
     }
 
     const setPrompt = () => {
+      console.log('setPrompt');
       if(users[user].gameOwner && !promptChosen){
         let promptIndex = Math.floor(Math.random() * Prompts.length);
         let Prompt = Prompts[promptIndex].text;
@@ -56,13 +57,20 @@ function Round(props) {
     const waitForAll = (snapshot) => {
       readyRef.once('value')
         .then((snapshot) => {
-          console.log(snapshot.val());
+          let readyStateObj = snapshot.val();
+          let proceed = true;
+          for(let player in readyStateObj){
+            if(!readyStateObj[player]){
+              proceed = false;
+            }
+          }
+          if(proceed = true){
+            showPrompt();
+          }
         })
     }
-    //REALLY WEIRD - not sure why this is not updating the gameOwner to true???
+
     const onReady = () => {
-      console.log('never hits for first boi?')
-      console.log(user);
       readyRef.update({
         [user]: true
       })
@@ -71,24 +79,6 @@ function Round(props) {
     const handleCard = (snapshot) => {
       // console.log(snapshot.val());
     }
-
-    // gameStateRef.once('value')
-    //   .then((snapshot) => {
-    //     gameStateRef.on('child_changed', showPrompt);
-    //     cardsRef.on('child_changed', handleCard);
-    //   })
-    //   .then(() => {
-    //     if(users[user].gameOwner && !promptChosen){
-    //       let promptIndex = Math.floor(Math.random() * Prompts.length);
-    //       let Prompt = Prompts[promptIndex].text;
-    //       Prompts.splice(promptIndex, 1);
-    //       gameStateRef.update({
-    //         prompt: Prompt
-    //       })
-    //       setTextDisplay(Prompt);
-    //       choosePrompt(true);
-    //     }
-    //   })
 
     const submitCard = () => {
       cardsRef.update({cardToPlay});

@@ -41,9 +41,6 @@ function WaitingRoom(props) {
                 setUsers(snapshot.val())
             })
             .then(() => {
-                readyRef.update({
-                    [user]: false
-                })
                 gameStateRef.update({
                     started: true
                 })
