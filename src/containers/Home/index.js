@@ -40,7 +40,8 @@ class Home extends Component {
         started : false,
         turn    : 0,
         prompt  : '',
-        cards   : {} 
+        cards   : {},
+        ready   : {}
       }
     });
     gameOwnerReference.set({

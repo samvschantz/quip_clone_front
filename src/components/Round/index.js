@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
 import Prompts from '../../prompts/prompts.json';
@@ -8,7 +8,8 @@ function Round(props) {
     const [roundDone, finishRound]        = useState(false);
     const [promptChosen, choosePrompt]    = useState(false);
     const [displayPrompt, setTextDisplay] = useState('');
-    const [cardToPlay, playCard]          = useState(''); 
+    const [cardToPlay, playCard]          = useState('');
+    const [allReady, setReady]            = useState(false); 
 
 	  const user          = props.user;
     const gameId        = props.gameId;
@@ -19,34 +20,64 @@ function Round(props) {
     const playerNames   = Object.keys(users);
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
+    const readyRef      = dbReference.ref('games/' + gameId + '/gameState/ready/' + user);
     const cardsRef      = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
     const apiUrl        = 'https://crhallberg.com/cah';
 
+    useEffect(() => {
+      gameStateListener();
+    }, [])
+
     const showPrompt = (snapshot) => {
-      setTextDisplay(snapshot.val());
+      if(allReady === true){
+        setTextDisplay(snapshot.val())
+      }
+    }
+
+    const gameStateListener = () => {
+      gameStateRef.on('child_changed', showPrompt);
+      setPrompt();
+    }
+
+    const setPrompt = () => {
+      if(users[user].gameOwner && !promptChosen){
+        let promptIndex = Math.floor(Math.random() * Prompts.length);
+        let Prompt = Prompts[promptIndex].text;
+        Prompts.splice(promptIndex, 1);
+        gameStateRef.update({
+          prompt: Prompt
+        })
+      }
+      onReady();
+    }
+
+    const onReady = () => {
+      readyRef.once('value')
+        .then((snapshot) => {
+        })
     }
 
     const handleCard = (snapshot) => {
-      console.log(snapshot.val());
+      // console.log(snapshot.val());
     }
 
-    gameStateRef.once('value')
-      .then((snapshot) => {
-        gameStateRef.on('child_changed', showPrompt);
-        cardsRef.on('child_changed', handleCard);
-      })
-      .then(() => {
-        if(users[user].gameOwner && !promptChosen){
-          let promptIndex = Math.floor(Math.random() * Prompts.length);
-          let Prompt = Prompts[promptIndex].text;
-          Prompts.splice(promptIndex, 1);
-          gameStateRef.update({
-            prompt: Prompt
-          })
-          setTextDisplay(Prompt);
-          choosePrompt(true);
-        }
-      })
+    // gameStateRef.once('value')
+    //   .then((snapshot) => {
+    //     gameStateRef.on('child_changed', showPrompt);
+    //     cardsRef.on('child_changed', handleCard);
+    //   })
+    //   .then(() => {
+    //     if(users[user].gameOwner && !promptChosen){
+    //       let promptIndex = Math.floor(Math.random() * Prompts.length);
+    //       let Prompt = Prompts[promptIndex].text;
+    //       Prompts.splice(promptIndex, 1);
+    //       gameStateRef.update({
+    //         prompt: Prompt
+    //       })
+    //       setTextDisplay(Prompt);
+    //       choosePrompt(true);
+    //     }
+    //   })
 
     const submitCard = () => {
       cardsRef.update({cardToPlay});

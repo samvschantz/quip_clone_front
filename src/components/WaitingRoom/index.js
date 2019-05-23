@@ -14,6 +14,7 @@ function WaitingRoom(props) {
     const gameRef       = dbReference.ref('games/' + gameId);
     const usersRef      = dbReference.ref('games/' + gameId + '/players');
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
+    const readyRef      = dbReference.ref('games/' + gameId + '/gameState/promptReady')
 
     useEffect(() => {
         usersRef.once('value')
@@ -23,19 +24,26 @@ function WaitingRoom(props) {
     }, [])
 
     const handlePacket = (snapshot) => {
-        let allPlayers      = snapshot.val();
-        let allPlayersArr   = Object.keys(allPlayers);
-        setData(allPlayersArr);
+        if(snapshot.key === 'players'){
+            let allPlayers      = snapshot.val();
+            let allPlayersArr   = Object.keys(allPlayers);
+            setData(allPlayersArr);
+        }
     }
 
     gameRef.on('child_changed', handlePacket);
 
     const startGameHandler = () => {
+        gameRef.off();
+        gameStateRef.off();
         usersRef.once('value')
             .then((snapshot) => {
                 setUsers(snapshot.val())
             })
             .then(() => {
+                readyRef.update({
+                    [user]: false
+                })
                 gameStateRef.update({
                     started: true
                 })
