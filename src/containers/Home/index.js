@@ -41,7 +41,6 @@ class Home extends Component {
         turn    : 0,
         prompt  : '',
         cards   : {},
-        ready   : {}
       }
     });
     gameOwnerReference.set({

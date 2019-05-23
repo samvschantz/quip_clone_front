@@ -20,7 +20,8 @@ function Round(props) {
     const playerNames   = Object.keys(users);
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
-    const readyRef      = dbReference.ref('games/' + gameId + '/gameState/ready/' + user);
+    const readyRef      = dbReference.ref('games/' + gameId + '/promptReady');
+    const userReadyRef  = dbReference.ref('games/' + gameId + '/gameState/promptReady/' + user);
     const cardsRef      = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
     const apiUrl        = 'https://crhallberg.com/cah';
 
@@ -36,6 +37,7 @@ function Round(props) {
 
     const gameStateListener = () => {
       gameStateRef.on('child_changed', showPrompt);
+      readyRef.on('child_changed', waitForAll);
       setPrompt();
     }
 
@@ -51,10 +53,19 @@ function Round(props) {
       onReady();
     }
 
-    const onReady = () => {
+    const waitForAll = (snapshot) => {
       readyRef.once('value')
         .then((snapshot) => {
+          console.log(snapshot.val());
         })
+    }
+    //REALLY WEIRD - not sure why this is not updating the gameOwner to true???
+    const onReady = () => {
+      console.log('never hits for first boi?')
+      console.log(user);
+      readyRef.update({
+        [user]: true
+      })
     }
 
     const handleCard = (snapshot) => {
