@@ -81,13 +81,12 @@ function Round(props) {
       let cardSubmitted = snapshot.val().cardToPlay;
       cardsRef.once('value')
         .then((snapshot) => {
-          console.log(snapshot.val());
           let playedObj = snapshot.val();
-          addCard(Object.keys(playedObj).length);
-          if(numPlayed === playerNames.length - 1){
+          if(Object.keys(playedObj).length === playerNames.length - 1){
             cardsRef.off();
             console.log('we should head to judging now')
           }
+          addCard(Object.keys(playedObj).length);
         })
     }
 
