@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
-import Prompts from '../../prompts/prompts.json';
 
 function Round(props) {
 
@@ -39,19 +38,6 @@ function Round(props) {
     const gameStateListener = () => {
       readyRef.on('child_added', waitForAll);
       cardsRef.on('child_added', handleCard);
-      setPrompt();
-    }
-
-    const setPrompt = () => {
-      if(users[user].gameOwner){
-        let promptIndex = Math.floor(Math.random() * Prompts.length);
-        let Prompt = Prompts[promptIndex].text;
-        Prompts.splice(promptIndex, 1);
-        gameStateRef.update({
-          prompt: Prompt
-        })
-      }
-      onReady();
     }
 
     const waitForAll = (snapshot) => {

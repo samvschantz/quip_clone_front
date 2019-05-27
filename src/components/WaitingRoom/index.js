@@ -18,11 +18,11 @@ function WaitingRoom(props) {
     useEffect(() => {
         usersRef.once('value')
             .then((snapshot) => {
-                handlePacket(snapshot);
+                userData(snapshot);
             })
     }, [])
 
-    const handlePacket = (snapshot) => {
+    const userData = (snapshot) => {
         if(snapshot.key === 'players'){
             let allPlayers      = snapshot.val();
             let allPlayersArr   = Object.keys(allPlayers);
@@ -30,7 +30,7 @@ function WaitingRoom(props) {
         }
     }
 
-    gameRef.on('child_changed', handlePacket);
+    gameRef.on('child_changed', userData);
 
     const startGameHandler = () => {
         gameRef.off();
@@ -52,7 +52,7 @@ function WaitingRoom(props) {
     const copyId = () => {
         let id = document.getElementById('id').innerHTML;
         id = id.substring(6, 16)
-        var textarea = document.createElement("textarea");
+        let textarea = document.createElement("textarea");
         textarea.textContent = id;
         textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
         document.body.appendChild(textarea);
