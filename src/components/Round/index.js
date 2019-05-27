@@ -50,9 +50,8 @@ function Round(props) {
     const readyUp = () => {
       console.log('got here');
       readyRef.once('value')
-        .then((snapshot) => {
+        .then((snapshot) => { because
           if(Object.keys(snapshot.val()).length === playerNames.length){
-            console.log('ready');
             showPrompt();
           }
         })
