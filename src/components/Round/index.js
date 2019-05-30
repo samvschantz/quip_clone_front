@@ -79,7 +79,6 @@ function Round(props) {
 
 
     const handleCard = (snapshot) => {
-      console.log(snapshot.val());
       let cardSubmitted = snapshot.val().cardToPlay;
       cardsRef.once('value')
         .then((snapshot) => {
@@ -106,13 +105,21 @@ function Round(props) {
     }
 
     const inputHandler = (e) => {
-      console.log('hmmm')
       let input = e.target.value;
       playCard(input);
     }
 
+    const beginJudge = () => {
+      startJudging(true);
+      gameStateRef.once('value')
+        .then((snapshot) => {
+          console.log(snapshot.val());
+          let responses = [];
+        })
+    }
+
     const goToJudging = (gotHere) => {
-      console.log(gotHere);
+      beginJudge();
     }
 
     return (
@@ -149,6 +156,12 @@ function Round(props) {
               </div>
             :
               <div>
+                {
+                  playersTurn !== user ? 
+                  <p> {turn} is now judging.</p>
+                  : 
+                  <p>Choose a card:</p>
+                }
 
               </div>
           :<StartGame turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
