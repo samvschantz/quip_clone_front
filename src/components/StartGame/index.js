@@ -57,7 +57,7 @@ function StartGame(props) {
             }
           } else if(userInfo.gameOwner){
             currentTurn++;
-            setTurn(turn);
+            setTurn(currentTurn);
             let whosTurn = turnOrder[currentTurn];
             setPlayersTurn(whosTurn);
             gameStateRef.update({
