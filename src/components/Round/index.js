@@ -11,6 +11,7 @@ function Round(props) {
     const [numPlayed, addCard]            = useState(0);
     const [cardToPlay, playCard]          = useState('');
     const [turn, setTurn]                 = useState('');
+    const [time, setTimeAnimation]        = useState(false);
 
 	  const user                            = props.user;
     const gameId                          = props.gameId;
@@ -46,15 +47,15 @@ function Round(props) {
       gameStateRef.once('value')
         .then((snapshot) => {
           setTextDisplay(snapshot.val().prompt);
-          console.log(snapshot.val());
-          console.log(snapshot.val().whosTurn);
           setTurn(snapshot.val().whosTurn);
+          cardsRef.on('child_added', handleCard)
         })
         .then(() => {
           readyRef.update({
             [user]: false
           })  
         })
+        setTimeAnimation(true);
         window.setTimeout(function() { goToJudging('timeout'); }, 30000);
     }
 
@@ -78,6 +79,7 @@ function Round(props) {
 
 
     const handleCard = (snapshot) => {
+      console.log(snapshot.val());
       let cardSubmitted = snapshot.val().cardToPlay;
       cardsRef.once('value')
         .then((snapshot) => {
@@ -123,8 +125,8 @@ function Round(props) {
                 {
                   playersTurn !== user ? 
                   <div>
-                    <input id='card-input' type='text' placeholder='Fill in the blank' /> 
-                    <button >Play</button>
+                    <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} /> 
+                    <button onClick={submitCard} >Play</button>
                     <button >Edit</button>
                   </div>
                   : 
@@ -134,6 +136,16 @@ function Round(props) {
                   playersTurn !== user ? <p> {turn} is judging this round!</p> : ''
                 }
                 <p>cards have been played.</p>
+                {!time ? '' 
+                : <>
+                    <div className="timer one"></div>
+                    <div className="timer two"></div>
+                    <div className="timer three"></div>
+                    <div className="timer four"></div>
+                    <div className="timer five"></div>
+                    <div className="timer six"></div>
+                  </>
+                }
               </div>
             :
               <div>
