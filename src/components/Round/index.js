@@ -12,6 +12,7 @@ function Round(props) {
     const [cardToPlay, playCard]          = useState('');
     const [turn, setTurn]                 = useState('');
     const [time, setTimeAnimation]        = useState(false);
+    const [responses, setResponses]       = useState([]);
 
 	  const user                            = props.user;
     const gameId                          = props.gameId;
@@ -28,7 +29,7 @@ function Round(props) {
 
     useEffect(() => {
       gameListeners();
-      setPrompt();      
+      setPrompt(); 
     }, [])
 
 //Beginning of code to set and display prompt for all users simultaneously
@@ -53,8 +54,10 @@ function Round(props) {
         .then(() => {
           readyRef.update({
             [user]: false
-          })  
+          }) 
+          readyRef.off();
         })
+        // readyRef.on('child_changed', beginJudge); 
         setTimeAnimation(true);
         window.setTimeout(function() { goToJudging('timeout'); }, 30000);
     }
@@ -71,6 +74,7 @@ function Round(props) {
 
     const gameListeners = () => {
       readyRef.on('child_added', readyUp);
+      readyRef.on('child_changed', readyUp);
       readyRef.update({
         [user]: true
       })
@@ -110,16 +114,27 @@ function Round(props) {
     }
 
     const beginJudge = () => {
-      startJudging(true);
-      gameStateRef.once('value')
+      readyRef.once('value')
         .then((snapshot) => {
-          console.log(snapshot.val());
-          let responses = [];
+          if(Object.keys(snapshot.val()).length === playerNames.length){
+            startJudging(true);
+            gameStateRef.once('value')
+              .then((snapshot) => {
+                let cardsObj = snapshot.val().cards;
+                for(let player in cardsObj){
+                  responses.push(cardsObj[player].cardToPlay)
+                }
+                console.log(responses)
+                setResponses(responses);
+              })
+          }
         })
     }
 
     const goToJudging = (gotHere) => {
-      beginJudge();
+      readyRef.update({
+        [user]: true
+      })
     }
 
     return (
@@ -156,13 +171,25 @@ function Round(props) {
               </div>
             :
               <div>
+              <h1>{displayPrompt}</h1>
                 {
                   playersTurn !== user ? 
+                  <>
                   <p> {turn} is now judging.</p>
+                  {responses.map((response, index) => (
+                  <span key={index}>{response}</span>
+                  ))}
+                  </>
                   : 
+                  <>
                   <p>Choose a card:</p>
+                  {responses.map((response, index) => (
+                    <>
+                      <span key={index}>{response}</span> <button>Choose</button>
+                    </>
+                  ))}
+                  </>
                 }
-
               </div>
           :<StartGame turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
           }

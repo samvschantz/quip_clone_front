@@ -38,6 +38,7 @@ class Home extends Component {
       gameOwner : gameOwner,
       gameState : { 
         started : false,
+        judging : false,
         turn    : 0,
         prompt  : '',
         cards   : {},
