@@ -38,6 +38,7 @@ function WaitingRoom(props) {
         usersRef.once('value')
             .then((snapshot) => {
                 setUsers(snapshot.val())
+                usersRef.update(snapshot.val())
             })
             .then(() => {
                 gameStateRef.update({

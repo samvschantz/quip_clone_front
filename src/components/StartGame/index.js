@@ -9,14 +9,16 @@ function StartGame(props) {
     const [turn, setTurn]                     = useState(0);
     const [playersTurn, setPlayersTurn]       = useState('');
     const [turnOrder, setTurnOrder]           = useState([]);
+    const [users, setUsers]                   = useState({});
 
     const user          = props.user;
     const gameId        = props.gameId;
-    const users         = props.users;
-    const userInfo      = users[user];
-    const playerNames   = Object.keys(users);
+    const usersData     = props.users;
+    const userInfo      = usersData[user];
+    const playerNames   = Object.keys(usersData);
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
+    const usersRef      = dbReference.ref('games/' + gameId + '/players');
     let currentTurn     = 0;
     let whosTurn        = '';
 
@@ -27,12 +29,14 @@ function StartGame(props) {
     }, [])
 
     const triggerTurnChange = () => {
-      gameStateRef.once('value')
-        .then((snapshot) => {
-          whosTurn = snapshot.val().whosTurn;
-          setPlayersTurn(whosTurn);
-          setTurnChange(true);
-        })
+      if(currentTurn === 0){
+        gameStateRef.once('value')
+          .then((snapshot) => {
+            whosTurn = snapshot.val().whosTurn;
+            setPlayersTurn(whosTurn);
+            setTurnChange(true);
+          })
+      }
     }
 
     const moveTurn = () => {
@@ -59,22 +63,25 @@ function StartGame(props) {
           } else if(userInfo.gameOwner){
             gameStateRef.once('value')
               .then((snapshot) => {
+                console.log('does go not get here?')
                 let dbTurnOrder = snapshot.val().turnOrder;
                 setTurnOrder(dbTurnOrder)
+                return dbTurnOrder
+              })
+              .then((dbTurnOrder) => {
                 currentTurn++;
-                console.log(currentTurn);
                 console.log('is this happening?s')
+                console.log(dbTurnOrder);
+                console.log(currentTurn);
                 setTurn(currentTurn);
-                let whosTurn = turnOrder[currentTurn];
+                let whosTurn = dbTurnOrder[currentTurn - 1];
+                console.log(whosTurn);
                 setPlayersTurn(whosTurn);
-                console.log(gameId)
-                console.log(turn)
-                console.log(whosTurn)
                 gameStateRef.update({
                   turn      : currentTurn,
                   whosTurn  : whosTurn
                 })
-                triggerTurnChange();
+                // triggerTurnChange();
               })
           }
           triggerTurnChange();
@@ -83,12 +90,18 @@ function StartGame(props) {
 
     const pointsDisplay = () => {
       let rows = [];
-      for(let user in users){
-        rows.push(user + ' has ' + users[user].points + ' points');
-      }
-      setPlayersDisplay(rows);
-      //this sets  length of display before next turn - could also just have a ready? button
-      window.setTimeout(moveTurn, 1500);
+      usersRef.once('value')
+        .then((snapshot) => {
+          setUsers(snapshot.val())
+          console.log(props.users)
+          console.log(users)
+          for(let user in users){
+            rows.push(user + ' has ' + users[user].points + ' points');
+          }
+          setPlayersDisplay(rows);
+          //this sets  length of display before next turn - could also just have a ready? button
+          window.setTimeout(moveTurn, 1500);
+        })
     }
 
     function shuffle(array) {
