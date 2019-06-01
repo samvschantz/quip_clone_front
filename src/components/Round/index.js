@@ -180,6 +180,7 @@ function Round(props) {
 
     const backToStart = (snapshot) => {
       if(Object.keys(snapshot.val())[1] === 'winner'){
+        startJudging(false)
         finishRound(true);
       }
     }
