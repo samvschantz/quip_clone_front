@@ -124,10 +124,13 @@ function Round(props) {
             gameStateRef.once('value')
               .then((snapshot) => {
                 let cardsObj = snapshot.val().cards;
+                let responseArr = [];
                 for(let player in cardsObj){
-                  responses.push(cardsObj[player].cardToPlay)
+                  responseArr.push(cardsObj[player].cardToPlay)
                 }
-                setResponses(responses);
+                console.log(responses);
+                setResponses(responseArr);
+                console.log(responses);
               })
           }
         })
@@ -178,13 +181,15 @@ function Round(props) {
                   playersTurn !== user ?
                   <>
                   <p> {turn} is now judging.</p>
+                  {responses}
                   {responses.map((response, index) => (
-                  <span key={index}>{response}</span>
+                    <span key={index}>{response}</span>
                   ))}
                   </>
                   :
                   <>
                   <p>Choose a card:</p>
+                  {responses}
                   {responses.map((response, index) => (
                     <>
                       <span key={index}>{response}</span> <button>Choose</button>
