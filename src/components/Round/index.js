@@ -6,7 +6,7 @@ import Prompts from '../../prompts/prompts.json';
 function Round(props) {
 
     const [roundDone, finishRound]        = useState(false);
-    const [judging, startJudging]         = useState(false); 
+    const [judging, startJudging]         = useState(false);
     const [displayPrompt, setTextDisplay] = useState('');
     const [numPlayed, addCard]            = useState(0);
     const [cardToPlay, playCard]          = useState('');
@@ -24,12 +24,13 @@ function Round(props) {
     const gameStateRef                    = dbReference.ref('games/' + gameId + '/gameState');
     const readyRef                        = dbReference.ref('games/' + gameId + '/promptReady');
     const cardsRef                        = dbReference.ref('games/' + gameId + '/gameState/cards');
+    const judgingRef                      = dbReference.ref('games/' + gameId + '/gameState/judging');
     const userCardsRef                    = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
     // const apiUrl                          = 'https://crhallberg.com/cah';
 
     useEffect(() => {
       gameListeners();
-      setPrompt(); 
+      setPrompt();
     }, [])
 
 //Beginning of code to set and display prompt for all users simultaneously
@@ -49,15 +50,16 @@ function Round(props) {
         .then((snapshot) => {
           setTextDisplay(snapshot.val().prompt);
           setTurn(snapshot.val().whosTurn);
-          cardsRef.on('child_added', handleCard)
+          cardsRef.on('child_added', handleCard);
+          gameStateRef.on('child_changed', beginJudge);
         })
         .then(() => {
           readyRef.update({
             [user]: false
-          }) 
+          })
           readyRef.off();
         })
-        // readyRef.on('child_changed', beginJudge); 
+        // readyRef.on('child_changed', beginJudge);
         setTimeAnimation(true);
         window.setTimeout(function() { goToJudging('timeout'); }, 30000);
     }
@@ -83,13 +85,17 @@ function Round(props) {
 
 
     const handleCard = (snapshot) => {
+      console.log('handleCard');
       let cardSubmitted = snapshot.val().cardToPlay;
+      console.log(cardSubmitted);
       cardsRef.once('value')
         .then((snapshot) => {
           let playedObj = snapshot.val();
+          console.log(playedObj)
           if(Object.keys(playedObj).length === playerNames.length - 1){
+            console.log('ever hit this?')
             cardsRef.off();
-            goToJudging('all cards submitted');
+            goToJudging();
           }
           addCard(Object.keys(playedObj).length);
         })
@@ -98,7 +104,7 @@ function Round(props) {
     const submitCard = () => {
       userCardsRef.update({cardToPlay});
     }
-    
+
     const editCard = () => {
       userCardsRef.once('value')
         .then((snapshot) => {
@@ -114,6 +120,7 @@ function Round(props) {
     }
 
     const beginJudge = () => {
+      console.log('seems reasonable that all should reach here at correct time');
       readyRef.once('value')
         .then((snapshot) => {
           if(Object.keys(snapshot.val()).length === playerNames.length){
@@ -132,8 +139,8 @@ function Round(props) {
     }
 
     const goToJudging = (gotHere) => {
-      readyRef.update({
-        [user]: true
+      gameStateRef.update({
+        judging: true
       })
     }
 
@@ -141,24 +148,24 @@ function Round(props) {
         <div>
 	       {
           !roundDone ?
-            !judging ?    
+            !judging ?
               <div>
                 <h1>{displayPrompt}</h1>
                 {
-                  playersTurn !== user ? 
+                  playersTurn !== user ?
                   <div>
-                    <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} /> 
+                    <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} />
                     <button onClick={submitCard} >Play</button>
                     <button >Edit</button>
                   </div>
-                  : 
+                  :
                   <p>You're judging!</p>
                 }
                {
                   playersTurn !== user ? <p> {turn} is judging this round!</p> : ''
                 }
                 <p>cards have been played.</p>
-                {!time ? '' 
+                {!time ? ''
                 : <>
                     <div className="timer one"></div>
                     <div className="timer two"></div>
@@ -173,14 +180,14 @@ function Round(props) {
               <div>
               <h1>{displayPrompt}</h1>
                 {
-                  playersTurn !== user ? 
+                  playersTurn !== user ?
                   <>
                   <p> {turn} is now judging.</p>
                   {responses.map((response, index) => (
                   <span key={index}>{response}</span>
                   ))}
                   </>
-                  : 
+                  :
                   <>
                   <p>Choose a card:</p>
                   {responses.map((response, index) => (
