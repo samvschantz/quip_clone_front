@@ -117,13 +117,19 @@ function Round(props) {
 
     const beginJudge = () => {
       gameStateRef.off();
-      gameStateRef.once('value')
+      readyRef.once('value')
         .then((snapshot) => {
-          let cardsObj = snapshot.val().cards;
-          for(let player in cardsObj){
-            responses.push(cardsObj[player].cardToPlay)
+          if(Object.keys(snapshot.val()).length === playerNames.length){
+            startJudging(true);
+            gameStateRef.once('value')
+              .then((snapshot) => {
+                let cardsObj = snapshot.val().cards;
+                for(let player in cardsObj){
+                  responses.push(cardsObj[player].cardToPlay)
+                }
+                setResponses(responses);
+              })
           }
-          setResponses(responses);
         })
     }
 
