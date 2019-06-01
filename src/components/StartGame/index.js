@@ -36,6 +36,7 @@ function StartGame(props) {
     }
 
     const moveTurn = () => {
+      console.log('does move turn hit?')
       gameStateRef.once('value')
         .then((snapshot) => {
           currentTurn = snapshot.val().turn;
@@ -56,15 +57,25 @@ function StartGame(props) {
               triggerTurnChange();
             }
           } else if(userInfo.gameOwner){
-            currentTurn++;
-            setTurn(currentTurn);
-            let whosTurn = turnOrder[currentTurn];
-            setPlayersTurn(whosTurn);
-            gameStateRef.update({
-              turn      : turn,
-              whosTurn  : whosTurn
-            })
-            triggerTurnChange();
+            gameStateRef.once('value')
+              .then((snapshot) => {
+                let dbTurnOrder = snapshot.val().turnOrder;
+                setTurnOrder(dbTurnOrder)
+                currentTurn++;
+                console.log(currentTurn);
+                console.log('is this happening?s')
+                setTurn(currentTurn);
+                let whosTurn = turnOrder[currentTurn];
+                setPlayersTurn(whosTurn);
+                console.log(gameId)
+                console.log(turn)
+                console.log(whosTurn)
+                gameStateRef.update({
+                  turn      : currentTurn,
+                  whosTurn  : whosTurn
+                })
+                triggerTurnChange();
+              })
           }
           triggerTurnChange();
         })
@@ -77,7 +88,7 @@ function StartGame(props) {
       }
       setPlayersDisplay(rows);
       //this sets  length of display before next turn - could also just have a ready? button
-      window.setTimeout(moveTurn, 500);
+      window.setTimeout(moveTurn, 1500);
     }
 
     function shuffle(array) {
@@ -101,7 +112,7 @@ function StartGame(props) {
                 <span key={index}>{player}</span>
             ))}
           </div>
-          :<Round turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
+          :<Round turnOrder={turnOrder} turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
           }
         </div>
     )

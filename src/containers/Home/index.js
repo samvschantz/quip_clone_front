@@ -42,7 +42,10 @@ class Home extends Component {
         turn            : 0,
         prompt          : '',
         cards           : {},
-        lastRoundWinner : {}
+        lastRoundWinner : {
+          winner: '',
+          response: ''
+        }
       }
     });
     gameOwnerReference.set({

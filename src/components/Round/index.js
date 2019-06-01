@@ -15,6 +15,7 @@ function Round(props) {
     const [responses, setResponses]       = useState([]);
 
 	  const user                            = props.user;
+    const turnOrder                       = props.turnOrder;
     const gameId                          = props.gameId;
     const users                           = props.users;
     const userInfo                        = users[user];
@@ -116,12 +117,10 @@ function Round(props) {
     }
 
     const beginJudge = (snapshot) => {
-      console.log(snapshot.val())
       if(snapshot.val()){
         gameStateRef.off();
-        console.log('hthis is where listener should be added');
         gameStateRef.on('child_changed', backToStart);
-        gameStateRef.on('child_added', backToStart);
+        gameStateRef.on('child_changed', backToStart);
         readyRef.once('value')
           .then((snapshot) => {
             if(Object.keys(snapshot.val()).length === playerNames.length){
@@ -156,7 +155,6 @@ function Round(props) {
             if(cardData[user].cardToPlay === response){
               playersRef.once('value')
                 .then((snapshot) => {
-                  console.log(snapshot.val());
                   let playerData = snapshot.val();
                   let points = 0;
                   for(let player in playerData){
@@ -179,8 +177,19 @@ function Round(props) {
     }
 
     const backToStart = (snapshot) => {
+      console.log('=======')
+      console.log(snapshot.val());
+      console.log(snapshot.key);
       if(Object.keys(snapshot.val())[1] === 'winner'){
-        startJudging(false)
+        console.log('got to choice so gs should update')
+        gameStateRef.update({
+          judging : false,
+          cards   : {},
+          prompt  : ''
+        })
+      }
+      if(snapshot.key === 'prompt'){
+        console.log('got to finishRound');
         finishRound(true);
       }
     }
@@ -239,7 +248,7 @@ function Round(props) {
                   </>
                 }
               </div>
-          :<StartGame turn={turn} gameId={gameId} user={user} users={users} />
+          :<StartGame turn={turn} gameId={gameId} user={user} users={users} turnOrder={turnOrder}/>
           }
         </div>
     )
