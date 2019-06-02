@@ -92,11 +92,11 @@ function StartGame(props) {
       let rows = [];
       usersRef.once('value')
         .then((snapshot) => {
-          setUsers(snapshot.val())
-          console.log(props.users)
-          console.log(users)
-          for(let user in users){
-            rows.push(user + ' has ' + users[user].points + ' points');
+          console.log('this is where points display is');
+          let usersObj = snapshot.val();
+          setUsers(usersObj);
+          for(let user in usersObj){
+            rows.push(user + ' has ' + usersObj[user].points + ' points');
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
