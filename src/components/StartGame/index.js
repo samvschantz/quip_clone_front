@@ -69,7 +69,6 @@ function StartGame(props) {
                 return dbTurnOrder
               })
               .then((dbTurnOrder) => {
-                console.log(currentTurn);
                 if(currentTurn <= 2){
                   currentTurn++;
                 } else {
