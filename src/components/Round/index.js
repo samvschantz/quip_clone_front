@@ -13,6 +13,7 @@ function Round(props) {
     const [turn, setTurn]                 = useState('');
     const [time, setTimeAnimation]        = useState(false);
     const [responses, setResponses]       = useState([]);
+    const [twoInputs, isTwo]              = useState(false);
 
 	  const user                            = props.user;
     const turnOrder                       = props.turnOrder;
@@ -39,6 +40,10 @@ function Round(props) {
       if(users[user].gameOwner){
         let promptIndex = Math.floor(Math.random() * Prompts.length);
         let Prompt = Prompts[promptIndex].text;
+        let two = Prompts[promptIndex].pick;
+        if(two === 2){
+          isTwo(true);  
+        }
         Prompts.splice(promptIndex, 1);
         gameStateRef.update({
           prompt: Prompt
@@ -115,7 +120,9 @@ function Round(props) {
         })
     }
 
-    const inputHandler = (e) => {
+    const inputHandler = (e, inputEl) => {
+      console.log(e);
+      console.log(inputEl);
       let input = e.target.value;
       playCard(input);
     }
@@ -205,11 +212,22 @@ function Round(props) {
                 <h1>{displayPrompt}</h1>
                 {
                   turn !== user ?
-                  <div>
-                    <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e)} />
-                    <button onClick={submitCard} >Play</button>
-                    <button >Edit</button>
-                  </div>
+                    <>
+                    {!twoInputs ?
+                      <div>
+                        <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e, 'one')} />
+                        <button onClick={submitCard} >Play</button>
+                        <button >Edit</button>
+                      </div>
+                      :
+                      <div>
+                        <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e, 'one')} />
+                        <input id='card-input-two' type='text' placeholder='Fill in the second blank' onInput={(e) => inputHandler(e, 'two')} />
+                        <button onClick={submitCard} >Play</button>
+                        <button >Edit</button>
+                      </div>
+                    }
+                    </>
                   :
                   <p>You're judging!</p>
                 }
