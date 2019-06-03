@@ -52,7 +52,7 @@ function Round(props) {
           setTextDisplay(snapshot.val().prompt);
           setTurn(snapshot.val().whosTurn);
           cardsRef.on('child_added', handleCard);
-          gameStateRef.on('child_changed', beginJudge);
+          cardsRef.on('child_changed', handleCard);
         })
         .then(() => {
           readyRef.update({
@@ -97,6 +97,9 @@ function Round(props) {
           }
           addCard(Object.keys(playedObj).length);
         })
+        .then(() => {
+          beginJudge();
+        })
     }
 
     const submitCard = () => {
@@ -117,27 +120,33 @@ function Round(props) {
       playCard(input);
     }
 
-    const beginJudge = (snapshot) => {
-      if(snapshot.val()){
-        gameStateRef.off();
-        gameStateRef.on('child_changed', backToStart);
-        gameStateRef.on('child_changed', backToStart);
-        readyRef.once('value')
-          .then((snapshot) => {
-            if(Object.keys(snapshot.val()).length === playerNames.length){
-              startJudging(true);
-              gameStateRef.once('value')
-                .then((snapshot) => {
-                  let cardsObj = snapshot.val().cards;
-                  let responseArr = [];
-                  for(let player in cardsObj){
-                    responseArr.push(cardsObj[player].cardToPlay)
-                  }
-                  setResponses(responseArr);
+    const beginJudge = () => {
+      cardsRef.once('value')
+        .then((snapshot) => {
+          return snapshot.val()
+        })
+        .then((cards) => {
+          console.log(cards);
+          if(Object.keys(cards).length === playerNames.length - 1){
+            console.log('we don\'t wanna get here twice');
+            gameStateRef.off();
+            gameStateRef.on('child_changed', backToStart);
+            readyRef.once('value')
+              .then((snapshot) => {
+                console.log("is this happening");            
+                startJudging(true);
+                gameStateRef.once('value')
+                  .then((snapshot) => {
+                    let cardsObj = snapshot.val().cards;
+                    let responseArr = [];
+                    for(let player in cardsObj){
+                      responseArr.push(cardsObj[player].cardToPlay)
+                    }
+                    setResponses(responseArr);
                 })
-            }
-          })
-      }
+              })
+          }
+        })
     }
 
     const goToJudging = (gotHere) => {
