@@ -36,11 +36,12 @@ function StartGame(props) {
             setPlayersTurn(whosTurn);
             setTurnChange(true);
           })
+      } else {
+        setTurnChange(true);    
       }
     }
 
     const moveTurn = () => {
-      console.log('does move turn hit?')
       gameStateRef.once('value')
         .then((snapshot) => {
           currentTurn = snapshot.val().turn;
@@ -63,19 +64,14 @@ function StartGame(props) {
           } else if(userInfo.gameOwner){
             gameStateRef.once('value')
               .then((snapshot) => {
-                console.log('does go not get here?')
                 let dbTurnOrder = snapshot.val().turnOrder;
                 setTurnOrder(dbTurnOrder)
                 return dbTurnOrder
               })
               .then((dbTurnOrder) => {
                 currentTurn++;
-                console.log('is this happening?s')
-                console.log(dbTurnOrder);
-                console.log(currentTurn);
                 setTurn(currentTurn);
                 let whosTurn = dbTurnOrder[currentTurn - 1];
-                console.log(whosTurn);
                 setPlayersTurn(whosTurn);
                 gameStateRef.update({
                   turn      : currentTurn,
@@ -92,7 +88,6 @@ function StartGame(props) {
       let rows = [];
       usersRef.once('value')
         .then((snapshot) => {
-          console.log('this is where points display is');
           let usersObj = snapshot.val();
           setUsers(usersObj);
           for(let user in usersObj){
@@ -100,7 +95,7 @@ function StartGame(props) {
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
-          window.setTimeout(moveTurn, 1500);
+          window.setTimeout(moveTurn, 3000);
         })
     }
 

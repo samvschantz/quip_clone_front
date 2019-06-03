@@ -78,6 +78,7 @@ function Round(props) {
     const gameListeners = () => {
       readyRef.on('child_added', readyUp);
       readyRef.on('child_changed', readyUp);
+      gameStateRef.on('child_changed', readyUp);
       readyRef.update({
         [user]: true
       })
@@ -177,11 +178,7 @@ function Round(props) {
     }
 
     const backToStart = (snapshot) => {
-      console.log('=======')
-      console.log(snapshot.val());
-      console.log(snapshot.key);
       if(Object.keys(snapshot.val())[1] === 'winner'){
-        console.log('got to choice so gs should update')
         gameStateRef.update({
           judging : false,
           cards   : {},
@@ -189,7 +186,6 @@ function Round(props) {
         })
       }
       if(snapshot.key === 'prompt'){
-        console.log('got to finishRound');
         finishRound(true);
       }
     }
