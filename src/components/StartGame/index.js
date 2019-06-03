@@ -69,7 +69,12 @@ function StartGame(props) {
                 return dbTurnOrder
               })
               .then((dbTurnOrder) => {
-                currentTurn++;
+                console.log(currentTurn);
+                if(currentTurn <= 2){
+                  currentTurn++;
+                } else {
+                  currentTurn -= 2;
+                }
                 setTurn(currentTurn);
                 let whosTurn = dbTurnOrder[currentTurn - 1];
                 setPlayersTurn(whosTurn);
@@ -95,12 +100,12 @@ function StartGame(props) {
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
-          window.setTimeout(moveTurn, 3000);
+          window.setTimeout(moveTurn, 10000);
         })
     }
 
     function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
+      for (let i = array.length - 1; i > 0; i--){
         let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
         [array[i], array[j]] = [array[j], array[i]]; // swap elements
       }

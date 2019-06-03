@@ -126,14 +126,11 @@ function Round(props) {
           return snapshot.val()
         })
         .then((cards) => {
-          console.log(cards);
           if(Object.keys(cards).length === playerNames.length - 1){
-            console.log('we don\'t wanna get here twice');
             gameStateRef.off();
             gameStateRef.on('child_changed', backToStart);
             readyRef.once('value')
               .then((snapshot) => {
-                console.log("is this happening");            
                 startJudging(true);
                 gameStateRef.once('value')
                   .then((snapshot) => {
