@@ -15,11 +15,20 @@ class Home extends Component {
   // both become inactive if their standards are not met
 
   inputHandler = (e, input) => {
-    let userInput = e.target.value;
-    let button    = document.getElementById(input + '-button');
-    if(userInput.length > 2 && input === 'new-game'){
+    let userInput   = e.target.value;
+    let button      = document.getElementById(input + '-button');
+    let joinButton  = document.getElementById('join-game-button');
+    let joinInput   = document.getElementById('game-id-input');
+    if(userInput.length > 2 && input === 'new-game' && joinInput.value.length !== 9){
       button.classList.remove("noClick");
       this.setState({ user: userInput });
+    } else if(userInput.length > 2 && input === 'new-game' && joinInput.value.length === 9){
+      button.classList.remove("noClick");
+      joinButton.classList.remove("noClick");
+      this.setState({ 
+        user   : userInput,
+        gameId : joinInput.value 
+      })
     } else if(userInput.length === 9 && input === 'join-game' && this.state.user.length > 2){
       button.classList.remove("noClick");
       this.setState({ gameId: userInput })
