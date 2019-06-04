@@ -145,6 +145,10 @@ button:hover{
 	user-select: none;
 }
 
+.round{
+  margin-left:40px;
+}
+
 .timer{
 	height:30px;
 	width: 30px;

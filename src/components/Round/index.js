@@ -251,7 +251,7 @@ function Round(props) {
     }
 
     return (
-        <div>
+        <div className="round">
 	       {
           winnerIs === '' ?
             !roundDone ?
