@@ -251,24 +251,30 @@ function Round(props) {
                 }
               </div>
             :
-              <div>
+              <div className="judging">
               <h1>{displayPrompt}</h1>
                 {
                   turn !== user ?
                   <>
                   <p> {turn} is now judging.</p>
-                  {responses.map((response, index) => (
-                    <span key={index}>{response}</span>
-                  ))}
+                    <div class="cards">
+                      {responses.map((response, index) => (
+                        <div className="flip-2-hor-top-1 card" key={index}>
+                          <span key={index}>{response}</span>
+                        </div>
+                      ))}
+                    </div>
                   </>
                   :
                   <>
                   <p>Choose a card:</p>
-                  {responses.map((response, index) => (
-                    <div key={index}>
-                      <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
-                    </div>
-                  ))}
+                  <div class="cards">
+                    {responses.map((response, index) => (
+                      <div className="flip-2-hor-top-1 card" key={index}>
+                        <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
+                      </div>
+                    ))}
+                  </div>
                   </>
                 }
               </div>

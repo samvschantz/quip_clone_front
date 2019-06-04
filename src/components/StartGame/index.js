@@ -118,12 +118,15 @@ function StartGame(props) {
     return (
         <div>
           {!turnChanged ?
-          <div>
-            <h1>Players</h1>
-            {playersPoints.map((player, index) => (
-                <span key={index}>{player}</span>
-            ))}
-          </div>
+            <div className="start-game">
+              <div className="flip-2-hor-top-1 card">   
+                <h1>Players</h1>
+                {playersPoints.map((player, index) => (
+                    <span key={index}>{player}</span>
+                ))}
+                <span className="quip">quip</span>
+              </div>
+            </div>
           :<Round turnOrder={turnOrder} turn={turn} gameId={gameId} user={user} users={users} playersTurn={playersTurn}/>
           }
         </div>
