@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
-import Prompts from '../../prompts/doubleprompts.json';
+import Prompts from '../../prompts/prompts.json';
 
 function Round(props) {
 
@@ -121,12 +121,14 @@ function Round(props) {
       let inputFields = document.getElementsByTagName('input');
       let inputValues = '';
       let numBlanks   = displayPrompt.split('_').length - 1;
-
+      let toDisplay   = displayPrompt;
       for(let i = 0; i < inputFields.length; i++){
+        let value = inputFields[i].value;
         if(numBlanks > i){
-          inputValues = displayPrompt.replace('_', inputFields[i]);
+          inputValues = toDisplay.replace('_', value);
+          toDisplay = inputValues;
         } else {
-          inputValues += inputFields[i];
+          inputValues += value;
         }
       }
       userCardsRef.update({inputValues});
