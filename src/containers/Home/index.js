@@ -107,16 +107,15 @@ class Home extends Component {
       <div>
         { this.state.gameStarted ? <WaitingRoom gameId={this.state.gameId} user={this.state.user} /> :
           <div className="start-screen">
-            <div>   
-              <p>Enter a name to get started</p>
+            <div className="flip-2-hor-top-1">   
+              <p>Enter name to get started</p>
               <input id="name-input" onInput={(e) => this.inputHandler(e, 'new-game')} />
               <button className="noClick" id="new-game-button" onClick={this.newGame} >New Game</button>
-            </div>
-            <div>
-              <p>Game ID required to join existing game.</p>
+              <p>Game ID</p>
               <input id="game-id-input" onInput={(e) => this.inputHandler(e, 'join-game')} />
               <button className="noClick" id="join-game-button" onClick={this.joinGame} >Join Game</button>
               <p id="error-block"></p>
+              <span className="quip">quip</span>
             </div>
           </div>
         }
