@@ -127,6 +127,14 @@ button:hover{
 	margin:0 auto;
 }
 
+#error{
+  display:none;
+}
+
+.show#error{
+  display:block;
+}
+
 .waiting-room div{
 	flex: 1;
 }

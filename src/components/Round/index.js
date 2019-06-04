@@ -136,8 +136,13 @@ function Round(props) {
       let inputValues = '';
       let numBlanks   = displayPrompt.split('_').length - 1;
       let toDisplay   = displayPrompt;
+      let ignored     = false;
+      const error     = document.getElementById('error');
       for(let i = 0; i < inputFields.length; i++){
         let value = inputFields[i].value;
+        if(value === ''){
+          ignored = true;
+        }
         if(numBlanks > i){
           inputValues = toDisplay.replace('_', value);
           toDisplay = inputValues;
@@ -145,7 +150,14 @@ function Round(props) {
           inputValues += value;
         }
       }
-      userCardsRef.update({inputValues});
+      if(ignored === false){
+        if(error.classList.contains('show')){
+          error.classList.remove('show');
+        }
+        userCardsRef.update({inputValues});
+      } else {
+        error.classList.add('show')
+      }
     }
 
     const beginJudge = () => {
@@ -241,6 +253,7 @@ function Round(props) {
                       <div>
                         {displayInputs}
                         <button onClick={submitCard} >Play</button>
+                        <p id="error">Make sure to fill all fields before clicking play!</p>
                       </div>
                     :
                     <p>You're judging!</p>
