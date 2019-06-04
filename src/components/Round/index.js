@@ -42,7 +42,7 @@ function Round(props) {
         let Prompt = Prompts[promptIndex].text;
         let two = Prompts[promptIndex].pick;
         if(two === 2){
-          isTwo(true);  
+          isTwo(true);
         }
         Prompts.splice(promptIndex, 1);
         gameStateRef.update({
@@ -108,6 +108,13 @@ function Round(props) {
     }
 
     const submitCard = () => {
+      let input = document.getElementById('card-input');
+      input = input.value;
+      if(twoInputs){
+        let secondInput = document.getElementById('card-input-two');
+        input += ' ' + secondInput.value;
+      }
+      playCard(input);
       userCardsRef.update({cardToPlay});
     }
 
@@ -118,13 +125,6 @@ function Round(props) {
           const input = document.getElementsByTagName('input');
           input.text = cardText;
         })
-    }
-
-    const inputHandler = (e, inputEl) => {
-      console.log(e);
-      console.log(inputEl);
-      let input = e.target.value;
-      playCard(input);
     }
 
     const beginJudge = () => {
@@ -215,14 +215,14 @@ function Round(props) {
                     <>
                     {!twoInputs ?
                       <div>
-                        <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e, 'one')} />
+                        <input id='card-input' type='text' placeholder='Fill in the blank'/>
                         <button onClick={submitCard} >Play</button>
                         <button >Edit</button>
                       </div>
                       :
                       <div>
-                        <input id='card-input' type='text' placeholder='Fill in the blank' onInput={(e) => inputHandler(e, 'one')} />
-                        <input id='card-input-two' type='text' placeholder='Fill in the second blank' onInput={(e) => inputHandler(e, 'two')} />
+                        <input id='card-input' type='text' placeholder='Fill in the blank'/>
+                        <input id='card-input-two' type='text' placeholder='Fill in the second blank'/>
                         <button onClick={submitCard} >Play</button>
                         <button >Edit</button>
                       </div>
