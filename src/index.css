@@ -85,11 +85,15 @@ button {
 
 .start-screen input{
 	width:80%;
+    display:block;
+}
+
+.start-screen input, input{
 	outline:none;
     border: none;
     border-bottom: 2px solid black;
-    display:block;
     background-color:transparent;
+    margin-right: 10px;
 }
 
 .quip{

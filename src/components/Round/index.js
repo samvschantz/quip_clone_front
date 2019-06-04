@@ -15,6 +15,7 @@ function Round(props) {
     const [responses, setResponses]       = useState([]);
     const [inputs, setInputs]             = useState(0);
     const [displayInputs, setDispInputs]  = useState('');
+    const [winnerIs, setWinner]           = useState('');
 
 	  const user                            = props.user;
     const turnOrder                       = props.turnOrder;
@@ -32,9 +33,22 @@ function Round(props) {
     // const apiUrl                          = 'https://crhallberg.com/cah';
 
     useEffect(() => {
+      checkForWinner();
       gameListeners();
       setPrompt();
     }, [])
+
+    const checkForWinner = () => {
+      playersRef.once('value')
+        .then((snapshot) =>{
+          let playersData = snapshot.val()
+          for(let player in playersData){
+            if(playersData[player].points === 7){
+              setWinner(player);
+            }
+          }
+        })
+    }
 
 //Beginning of code to set and display prompt for all users simultaneously
     const setPrompt = () => {
@@ -134,15 +148,6 @@ function Round(props) {
       userCardsRef.update({inputValues});
     }
 
-    const editCard = () => {
-      userCardsRef.once('value')
-        .then((snapshot) => {
-          let cardText = snapshot.val().inputValues;
-          const input = document.getElementsByTagName('input');
-          input.text = cardText;
-        })
-    }
-
     const beginJudge = () => {
       cardsRef.once('value')
         .then((snapshot) => {
@@ -219,66 +224,81 @@ function Round(props) {
       }
     }
 
+    const restart = () => {
+      window.location.reload();
+    }
+
     return (
         <div>
 	       {
-          !roundDone ?
-            !judging ?
-              <div>
+          winnerIs === '' ?
+            !roundDone ?
+              !judging ?
+                <div>
+                  <h1>{displayPrompt}</h1>
+                  {
+                    turn !== user ?
+                      <div>
+                        {displayInputs}
+                        <button onClick={submitCard} >Play</button>
+                      </div>
+                    :
+                    <p>You're judging!</p>
+                  }
+                 {
+                    turn !== user ? <p> {turn} is judging this round!</p> : ''
+                  }
+                  <p>cards have been played.</p>
+                  {!time ? ''
+                  : <>
+                      <div className="timer one"></div>
+                      <div className="timer two"></div>
+                      <div className="timer three"></div>
+                      <div className="timer four"></div>
+                      <div className="timer five"></div>
+                      <div className="timer six"></div>
+                    </>
+                  }
+                </div>
+              :
+                <div className="judging">
                 <h1>{displayPrompt}</h1>
-                {
-                  turn !== user ?
-                    <div>
-                      {displayInputs}
-                      <button onClick={submitCard} >Play</button><button >Edit</button>
-                    </div>
-                  :
-                  <p>You're judging!</p>
-                }
-               {
-                  turn !== user ? <p> {turn} is judging this round!</p> : ''
-                }
-                <p>cards have been played.</p>
-                {!time ? ''
-                : <>
-                    <div className="timer one"></div>
-                    <div className="timer two"></div>
-                    <div className="timer three"></div>
-                    <div className="timer four"></div>
-                    <div className="timer five"></div>
-                    <div className="timer six"></div>
-                  </>
-                }
-              </div>
-            :
-              <div className="judging">
-              <h1>{displayPrompt}</h1>
-                {
-                  turn !== user ?
-                  <>
-                  <p> {turn} is now judging.</p>
+                  {
+                    turn !== user ?
+                    <>
+                    <p> {turn} is now judging.</p>
+                      <div class="cards">
+                        {responses.map((response, index) => (
+                          <div className="flip-2-hor-top-1 card" key={index}>
+                            <span key={index}>{response}</span>
+                            <span className="quip">quip</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                    :
+                    <>
+                    <p>Choose a card:</p>
                     <div class="cards">
                       {responses.map((response, index) => (
                         <div className="flip-2-hor-top-1 card" key={index}>
-                          <span key={index}>{response}</span>
+                          <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
+                          <span className="quip">quip</span>
                         </div>
                       ))}
                     </div>
-                  </>
-                  :
-                  <>
-                  <p>Choose a card:</p>
-                  <div class="cards">
-                    {responses.map((response, index) => (
-                      <div className="flip-2-hor-top-1 card" key={index}>
-                        <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
-                      </div>
-                    ))}
-                  </div>
-                  </>
-                }
-              </div>
-          :<StartGame turn={turn} gameId={gameId} user={user} users={users} turnOrder={turnOrder}/>
+                    </>
+                  }
+                </div>
+            :<StartGame turn={turn} gameId={gameId} user={user} users={users} turnOrder={turnOrder}/>
+          :<>
+            <div class="cards">
+              <div className="flip-2-hor-top-1 card">
+                  <span>The winner is: {winnerIs}</span>
+                  <button onClick={restart}>Play again?</button>
+                </div>
+            </div>
+            </>
           }
         </div>
     )
