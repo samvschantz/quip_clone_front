@@ -99,7 +99,7 @@ function StartGame(props) {
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
-          window.setTimeout(moveTurn, 10000);
+          window.setTimeout(moveTurn, 8000);
         })
     }
 

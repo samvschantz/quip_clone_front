@@ -82,7 +82,7 @@ class Home extends Component {
           //no game with this game id
           return Promise.reject();
         } else {
-          const playerReference = this.props.firebase.database().ref('games/' + gameId + '/players');
+          const playerReference = this.props.firebase.database().ref('games/' + gameId + '/players/' + user);
           playerReference.once('value')
             .then((snapshot) => {
               if(snapshot.hasChild(user)){

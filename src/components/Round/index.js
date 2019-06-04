@@ -88,7 +88,7 @@ function Round(props) {
         })
         // readyRef.on('child_changed', beginJudge);
         setTimeAnimation(true);
-        window.setTimeout(function() { goToJudging('timeout'); }, 30000);
+        window.setTimeout(function() { goToJudging('time'); }, 30000);
     }
 
     //Needed to ensure all displays happen only AFTER all players are ready to display
@@ -122,12 +122,12 @@ function Round(props) {
           let playedObj = snapshot.val();
           if(Object.keys(playedObj).length === playerNames.length - 1){
             cardsRef.off();
-            goToJudging();
+            goToJudging('cards');
           }
           addCard(Object.keys(playedObj).length);
         })
         .then(() => {
-          beginJudge();
+          beginJudge('cards');
         })
     }
 
@@ -160,13 +160,15 @@ function Round(props) {
       }
     }
 
-    const beginJudge = () => {
+    const beginJudge = (gotHere) => {
+      console.log('timeoout');
+      console.log(gotHere);
       cardsRef.once('value')
         .then((snapshot) => {
           return snapshot.val()
         })
         .then((cards) => {
-          if(Object.keys(cards).length === playerNames.length - 1){
+          if(gotHere === 'time' || Object.keys(cards).length === playerNames.length - 1){
             gameStateRef.off();
             gameStateRef.on('child_changed', backToStart);
             readyRef.once('value')
@@ -174,12 +176,17 @@ function Round(props) {
                 startJudging(true);
                 gameStateRef.once('value')
                   .then((snapshot) => {
-                    let cardsObj = snapshot.val().cards;
                     let responseArr = [];
-                    for(let player in cardsObj){
-                      responseArr.push(cardsObj[player].inputValues)
+                    if(snapshot.val().cards){
+                      let cardsObj = snapshot.val().cards;
+                      for(let player in cardsObj){
+                        responseArr.push(cardsObj[player].inputValues)
+                      }
                     }
                     setResponses(responseArr);
+                    if(responseArr.length === 0){
+                      finishRound(true);
+                    }
                 })
               })
           }
@@ -190,6 +197,9 @@ function Round(props) {
       gameStateRef.update({
         judging: true
       })
+      if(gotHere === 'time'){
+        beginJudge('time');
+      }
     }
 
     //End of code before final choice happens
@@ -280,7 +290,7 @@ function Round(props) {
                     turn !== user ?
                     <>
                     <p> {turn} is now judging.</p>
-                      <div class="cards">
+                      <div className="cards">
                         {responses.map((response, index) => (
                           <div className="flip-2-hor-top-1 card" key={index}>
                             <span key={index}>{response}</span>
@@ -292,7 +302,7 @@ function Round(props) {
                     :
                     <>
                     <p>Choose a card:</p>
-                    <div class="cards">
+                    <div className="cards">
                       {responses.map((response, index) => (
                         <div className="flip-2-hor-top-1 card" key={index}>
                           <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
@@ -305,7 +315,7 @@ function Round(props) {
                 </div>
             :<StartGame turn={turn} gameId={gameId} user={user} users={users} turnOrder={turnOrder}/>
           :<>
-            <div class="cards">
+            <div className="cards">
               <div className="flip-2-hor-top-1 card">
                   <span>The winner is: {winnerIs}</span>
                   <button onClick={restart}>Play again?</button>
