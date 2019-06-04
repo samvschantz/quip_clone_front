@@ -9,7 +9,7 @@ function Round(props) {
     const [judging, startJudging]         = useState(false);
     const [displayPrompt, setTextDisplay] = useState('');
     const [numPlayed, addCard]            = useState(0);
-    const [cardToPlay, playCard]          = useState('');
+    const [cardsPlayed, playCard]         = useState([]);
     const [turn, setTurn]                 = useState('');
     const [time, setTimeAnimation]        = useState(false);
     const [responses, setResponses]       = useState([]);
@@ -92,7 +92,10 @@ function Round(props) {
 
 
     const handleCard = (snapshot) => {
-      let cardSubmitted = snapshot.val().cardToPlay;
+      let cards         = cardsPlayed;
+      let cardSubmitted = snapshot.val();
+      cards.push(cardSubmitted);
+      playCard(cards);
       cardsRef.once('value')
         .then((snapshot) => {
           let playedObj = snapshot.val();
@@ -108,26 +111,27 @@ function Round(props) {
     }
 
     const submitCard = () => {
-      let input = document.getElementById('card-input');
-      input = input.value;
+      let input = document.getElementById('card-input').value;
+      console.log(input);
       if(twoInputs){
-        let secondInput = document.getElementById('card-input-two');
-        input += ' ' + secondInput.value;
+        let secondInput = document.getElementById('card-input-two').value;
+        console.log(secondInput);
+        input += ' ' + secondInput;
       }
-      playCard(input);
-      userCardsRef.update({cardToPlay});
+      userCardsRef.update({input});
     }
 
     const editCard = () => {
       userCardsRef.once('value')
         .then((snapshot) => {
-          let cardText = snapshot.val().cardToPlay;
+          let cardText = snapshot.val().input;
           const input = document.getElementsByTagName('input');
           input.text = cardText;
         })
     }
 
     const beginJudge = () => {
+      console.log('beginJudge')
       cardsRef.once('value')
         .then((snapshot) => {
           return snapshot.val()
@@ -142,10 +146,14 @@ function Round(props) {
                 gameStateRef.once('value')
                   .then((snapshot) => {
                     let cardsObj = snapshot.val().cards;
+                    console.log(cardsObj)
                     let responseArr = [];
                     for(let player in cardsObj){
-                      responseArr.push(cardsObj[player].cardToPlay)
+                      console.log(cardsObj[player])
+                      console.log(cardsObj[player].input)
+                      responseArr.push(cardsObj[player].input)
                     }
+                    console.log(responseArr)
                     setResponses(responseArr);
                 })
               })
@@ -166,7 +174,7 @@ function Round(props) {
         .then((snapshot) => {
           let cardData = snapshot.val();
           for(let user in cardData){
-            if(cardData[user].cardToPlay === response){
+            if(cardData[user].input === response){
               playersRef.once('value')
                 .then((snapshot) => {
                   let playerData = snapshot.val();
