@@ -13,7 +13,8 @@ function Round(props) {
     const [turn, setTurn]                 = useState('');
     const [time, setTimeAnimation]        = useState(false);
     const [responses, setResponses]       = useState([]);
-    const [twoInputs, isTwo]              = useState(false);
+    const [inputs, setInputs]             = useState(0);
+    const [displayInputs, setDispInputs]  = useState('');
 
 	  const user                            = props.user;
     const turnOrder                       = props.turnOrder;
@@ -39,14 +40,13 @@ function Round(props) {
     const setPrompt = () => {
       if(users[user].gameOwner){
         let promptIndex = Math.floor(Math.random() * Prompts.length);
-        let Prompt = Prompts[promptIndex].text;
-        let two = Prompts[promptIndex].pick;
-        if(two === 2){
-          isTwo(true);
-        }
+        let Prompt      = Prompts[promptIndex].text;
+        let numInputs   = Prompts[promptIndex].pick;
+        setInputs(numInputs);
         Prompts.splice(promptIndex, 1);
         gameStateRef.update({
-          prompt: Prompt
+          prompt: Prompt,
+          inputs: numInputs
         })
       }
     }
@@ -54,6 +54,13 @@ function Round(props) {
     const showPrompt = () => {
       gameStateRef.once('value')
         .then((snapshot) => {
+          let inputs = snapshot.val().inputs
+          let displayedInputs = [];
+          for(let i = 0; i < inputs; i++){
+            let element = <input key={i} id='card-input' type='text' placeholder='Fill in the blank'/>
+            displayedInputs.push(element);
+          }
+          setDispInputs(displayedInputs);
           setTextDisplay(snapshot.val().prompt);
           setTurn(snapshot.val().whosTurn);
           cardsRef.on('child_added', handleCard);
@@ -111,27 +118,27 @@ function Round(props) {
     }
 
     const submitCard = () => {
-      let input = document.getElementById('card-input').value;
-      console.log(input);
-      if(twoInputs){
-        let secondInput = document.getElementById('card-input-two').value;
-        console.log(secondInput);
-        input += ' ' + secondInput;
+      let inputFields = document.getElementsByTagName('input');
+      let inputValues = '';
+      for(let i = 0; i < inputFields.length; i++){
+        if(i > 0){
+          inputValues += ' ';
+        }
+        inputValues += inputFields[i].value;
       }
-      userCardsRef.update({input});
+      userCardsRef.update({inputValues});
     }
 
     const editCard = () => {
       userCardsRef.once('value')
         .then((snapshot) => {
-          let cardText = snapshot.val().input;
+          let cardText = snapshot.val().inputValues;
           const input = document.getElementsByTagName('input');
           input.text = cardText;
         })
     }
 
     const beginJudge = () => {
-      console.log('beginJudge')
       cardsRef.once('value')
         .then((snapshot) => {
           return snapshot.val()
@@ -146,14 +153,10 @@ function Round(props) {
                 gameStateRef.once('value')
                   .then((snapshot) => {
                     let cardsObj = snapshot.val().cards;
-                    console.log(cardsObj)
                     let responseArr = [];
                     for(let player in cardsObj){
-                      console.log(cardsObj[player])
-                      console.log(cardsObj[player].input)
-                      responseArr.push(cardsObj[player].input)
+                      responseArr.push(cardsObj[player].inputValues)
                     }
-                    console.log(responseArr)
                     setResponses(responseArr);
                 })
               })
@@ -174,7 +177,7 @@ function Round(props) {
         .then((snapshot) => {
           let cardData = snapshot.val();
           for(let user in cardData){
-            if(cardData[user].input === response){
+            if(cardData[user].inputValues === response){
               playersRef.once('value')
                 .then((snapshot) => {
                   let playerData = snapshot.val();
@@ -220,22 +223,10 @@ function Round(props) {
                 <h1>{displayPrompt}</h1>
                 {
                   turn !== user ?
-                    <>
-                    {!twoInputs ?
-                      <div>
-                        <input id='card-input' type='text' placeholder='Fill in the blank'/>
-                        <button onClick={submitCard} >Play</button>
-                        <button >Edit</button>
-                      </div>
-                      :
-                      <div>
-                        <input id='card-input' type='text' placeholder='Fill in the blank'/>
-                        <input id='card-input-two' type='text' placeholder='Fill in the second blank'/>
-                        <button onClick={submitCard} >Play</button>
-                        <button >Edit</button>
-                      </div>
-                    }
-                    </>
+                    <div>
+                      {displayInputs}
+                      <button onClick={submitCard} >Play</button><button >Edit</button>
+                    </div>
                   :
                   <p>You're judging!</p>
                 }
