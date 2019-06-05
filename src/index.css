@@ -190,8 +190,8 @@ select:-webkit-autofill:focus {
 }
 
 .flip-2-hor-top-1 {
-	-webkit-animation: flip-2-hor-top-1 1s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
-	        animation: flip-2-hor-top-1 1s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+	-webkit-animation: flip-2-hor-top-1 2s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+	        animation: flip-2-hor-top-1 2s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
 }
 
 /* ----------------------------------------------
