@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
-import Prompts from '../../prompts/prompts.json';
+import Prompts from '../../prompts/ff-prompts.json';
 
 function Round(props) {
 
