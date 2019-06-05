@@ -10,6 +10,7 @@ function StartGame(props) {
     const [playersTurn, setPlayersTurn]       = useState('');
     const [turnOrder, setTurnOrder]           = useState([]);
     const [users, setUsers]                   = useState({});
+    const [lastWinner, setWinner]             = useState('');
 
     const user          = props.user;
     const gameId        = props.gameId;
@@ -18,6 +19,7 @@ function StartGame(props) {
     const playerNames   = Object.keys(usersData);
     const dbReference   = props.firebase.database();
     const gameStateRef  = dbReference.ref('games/' + gameId + '/gameState');
+    const winnerRef     = dbReference.ref('games/' + gameId + '/gameState/lastRoundWinner');
     const usersRef      = dbReference.ref('games/' + gameId + '/players');
     let currentTurn     = 0;
     let whosTurn        = '';
@@ -26,7 +28,16 @@ function StartGame(props) {
       if(turnChanged === false){
         pointsDisplay();
       }
+      getWinner();
     }, [])
+
+    const getWinner = () => {
+      winnerRef.once('value')
+        .then((snapshot) => {
+          let prompt = snapshot.val().response
+          setWinner(prompt);
+        })
+    }
 
     const triggerTurnChange = () => {
       if(currentTurn === 0){
@@ -99,7 +110,7 @@ function StartGame(props) {
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
-          window.setTimeout(moveTurn, 8000);
+          window.setTimeout(moveTurn, 1000);
         })
     }
 
@@ -124,6 +135,7 @@ function StartGame(props) {
                 {playersPoints.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
+                {lastWinner === '' ? '': <p>Winning answer: {lastWinner}</p>}
                 <span className="quip">quip</span>
               </div>
             </div>

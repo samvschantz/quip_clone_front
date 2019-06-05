@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
-import Prompts from '../../prompts/prompts.json';
+import Prompts from '../../prompts/doubleprompts.json';
 
 function Round(props) {
 
@@ -256,7 +256,7 @@ function Round(props) {
             !roundDone ?
               !judging ?
                 <div>
-                  <h1>{displayPrompt}</h1>
+                  <h1 dangerouslySetInnerHTML={{__html: displayPrompt}}></h1>
                   {
                     turn !== user ?
                       <div>
