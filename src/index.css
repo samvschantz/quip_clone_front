@@ -1,6 +1,7 @@
 *{
 	font-family: 'Helvetica Neue', sans-serif;
   font-weight: bold;
+  font-size:20px;
 }
 
 body {
@@ -70,7 +71,7 @@ body{
 }
 
 p#id{
-	font-size:2em;
+	font-size:20px;
 }
 
 button {
@@ -132,6 +133,11 @@ button:hover{
 .waiting-room span{
 	display: block;
     margin-bottom: 20px;
+}
+
+.start-screen #error{
+  font-size:12px;
+  margin-top:-25px;
 }
 
 .waiting-room{

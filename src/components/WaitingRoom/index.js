@@ -90,7 +90,7 @@ function WaitingRoom(props) {
                     <p id='id'>Room: {gameId}</p>
                     <button onClick={copyId}>Copy game ID</button>
                     {isMobile?
-                        <a href={'sms:&body=' + gameId}>
+                        <a href={'sms:&body=Copy this game Id ' + gameId + ' to play Quips Against People at https://quip-3171f.firebaseapp.com/'}>
                             <button>Text game ID</button>
                         </a>
                         :

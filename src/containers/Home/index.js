@@ -19,7 +19,9 @@ class Home extends Component {
     let button      = document.getElementById(input + '-button');
     let joinButton  = document.getElementById('join-game-button');
     let joinInput   = document.getElementById('game-id-input');
+    let error       = document.getElementById('error');
     if(userInput.length > 2 && input === 'new-game' && joinInput.value.length !== 9){
+      error.classList.remove('show');
       button.classList.remove("noClick");
       this.setState({ user: userInput });
     } else if(userInput.length > 2 && input === 'new-game' && joinInput.value.length === 9){
@@ -32,6 +34,10 @@ class Home extends Component {
     } else if(userInput.length === 9 && input === 'join-game' && this.state.user.length > 2){
       button.classList.remove("noClick");
       this.setState({ gameId: userInput })
+    } else if(userInput.length <= 2 && input === 'new-game'){
+      error.classList.add('show');
+    } else if(userInput.length > 2 && input === 'new-game'){
+      error.classList.remove('show');
     } else {
       button.classList.add("noClick");
     }
@@ -120,6 +126,7 @@ class Home extends Component {
               <p>Enter name to get started</p>
               <input id="name-input" onInput={(e) => this.inputHandler(e, 'new-game')} />
               <button className="noClick" id="new-game-button" onClick={this.newGame} >New Game</button>
+              <p id="error">Must enter a name longer than 3 characters to start</p>
               <p>Game ID</p>
               <input id="game-id-input" onInput={(e) => this.inputHandler(e, 'join-game')} />
               <button className="noClick" id="join-game-button" onClick={this.joinGame} >Join Game</button>
