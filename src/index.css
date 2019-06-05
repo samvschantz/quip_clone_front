@@ -282,6 +282,21 @@ select:-webkit-autofill:focus {
     margin-left:10px;
   }
 
+  .round .round{
+    margin-left:0px;
+  }
+
+  .judging .cards{
+    flex-direction: column;
+    width:100%;
+    margin-top:20px;
+  }
+
+  .judging .flip-2-hor-top-1.card{
+    width: 200px;
+    height: 200px;
+  }
+
   @keyframes flip-2-hor-top-1 {
     0% {
       -webkit-transform: translateY(-100%) rotateX(-180deg);

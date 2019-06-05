@@ -270,7 +270,7 @@ function Round(props) {
                  {
                     turn !== user ? <p> {turn} is judging this round!</p> : ''
                   }
-                  <p>cards have been played.</p>
+                  <p>{numPlayed} cards have been played.</p>
                   {!time ? ''
                   : <>
                       <div className="timer one">turns last 30 seconds</div>
