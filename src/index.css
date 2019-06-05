@@ -1,5 +1,6 @@
 *{
-	font-family: 'Noto Sans HK', sans-serif;
+	font-family: 'Helvetica Neue', sans-serif;
+  font-weight: bold;
 }
 
 body {
@@ -58,7 +59,7 @@ body{
 }
 
 .start-screen button{
-	margin-top: 20px; 
+	margin-top: 20px;
 	margin-bottom: 40px;
 	margin-left: 0px;
 	display: block;
@@ -85,7 +86,7 @@ button {
 
 .start-screen input{
 	width:80%;
-    display:block;
+  display:block;
 }
 
 .start-screen input, input{
@@ -150,40 +151,30 @@ button:hover{
 }
 
 .timer{
-	height:30px;
-	width: 30px;
+	height:25px;
+	width: 200px;
 	background-color: black;
-	animation: mymove 5s;
+	animation: mymove 30s;
 	animation-fill-mode: forwards;
-	position: relative;
+  position: absolute;
+  bottom:0;
+  left:0;
+  text-align: left;
 }
 
 .timer.one{
 	animation-delay: 0s;
-}
-.timer.two{
-	animation-delay: 5s;
-}
-.timer.three{
-	animation-delay: 10s;
-}
-.timer.four{
-	animation-delay: 15s;
-}
-.timer.five{
-	animation-delay: 20s;
-}
-.timer.six{
-	animation-delay: 25s;
+  color:white;
+  background-color:black;
 }
 
 @keyframes mymove {
-  from {left: 0px;}
-  to {left: 200px;}
+  from {width: 100%;}
+  to {width: 0px;}
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,

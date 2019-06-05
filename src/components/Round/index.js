@@ -30,7 +30,7 @@ function Round(props) {
     const cardsRef                        = dbReference.ref('games/' + gameId + '/gameState/cards');
     const judgingRef                      = dbReference.ref('games/' + gameId + '/gameState/judging');
     const userCardsRef                    = dbReference.ref('games/' + gameId + '/gameState/cards/' + user);
-    // const apiUrl                          = 'https://crhallberg.com/cah';
+
 
     useEffect(() => {
       checkForWinner();
@@ -154,6 +154,7 @@ function Round(props) {
         if(error.classList.contains('show')){
           error.classList.remove('show');
         }
+        setDispInputs('');
         userCardsRef.update({inputValues});
       } else {
         error.classList.add('show')
@@ -161,8 +162,6 @@ function Round(props) {
     }
 
     const beginJudge = (gotHere) => {
-      console.log('timeoout');
-      console.log(gotHere);
       cardsRef.once('value')
         .then((snapshot) => {
           return snapshot.val()
@@ -262,7 +261,7 @@ function Round(props) {
                     turn !== user ?
                       <div>
                         {displayInputs}
-                        <button onClick={submitCard} >Play</button>
+                        {displayInputs !== '' ? <button onClick={submitCard}>Play</button> : ''}
                         <p id="error">Make sure to fill all fields before clicking play!</p>
                       </div>
                     :
@@ -274,12 +273,7 @@ function Round(props) {
                   <p>cards have been played.</p>
                   {!time ? ''
                   : <>
-                      <div className="timer one"></div>
-                      <div className="timer two"></div>
-                      <div className="timer three"></div>
-                      <div className="timer four"></div>
-                      <div className="timer five"></div>
-                      <div className="timer six"></div>
+                      <div className="timer one">turns last 30 seconds</div>
                     </>
                   }
                 </div>

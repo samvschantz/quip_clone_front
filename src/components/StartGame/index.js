@@ -37,7 +37,7 @@ function StartGame(props) {
             setTurnChange(true);
           })
       } else {
-        setTurnChange(true);    
+        setTurnChange(true);
       }
     }
 
@@ -119,7 +119,7 @@ function StartGame(props) {
         <div>
           {!turnChanged ?
             <div className="start-game">
-              <div className="flip-2-hor-top-1 card">   
+              <div className="flip-2-hor-top-1 card">
                 <h1>Players</h1>
                 {playersPoints.map((player, index) => (
                     <span key={index}>{player}</span>
