@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withFirebase } from '../../firebase';
 import StartGame from '../StartGame';
-import Prompts from '../../prompts/doubleprompts.json';
+import Prompts from '../../prompts/prompts.json';
 
 function Round(props) {
 
@@ -279,7 +279,7 @@ function Round(props) {
                 </div>
               :
                 <div className="judging">
-                <h1>{displayPrompt}</h1>
+                <h1 dangerouslySetInnerHTML={{__html: displayPrompt}}></h1>
                   {
                     turn !== user ?
                     <>
@@ -287,7 +287,7 @@ function Round(props) {
                       <div className="cards">
                         {responses.map((response, index) => (
                           <div className="flip-2-hor-top-1 card" key={index}>
-                            <span key={index}>{response}</span>
+                            <span key={index} dangerouslySetInnerHTML={{__html: response}}></span>
                             <span className="quip">quip</span>
                           </div>
                         ))}
@@ -299,7 +299,7 @@ function Round(props) {
                     <div className="cards">
                       {responses.map((response, index) => (
                         <div className="flip-2-hor-top-1 card" key={index}>
-                          <span>{response}</span> <button onClick={() => handleChoice(response)}>Choose</button>
+                          <span dangerouslySetInnerHTML={{__html: response}}></span> <button onClick={() => handleChoice(response)}>Choose</button>
                           <span className="quip">quip</span>
                         </div>
                       ))}

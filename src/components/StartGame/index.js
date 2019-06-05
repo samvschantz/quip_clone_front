@@ -110,7 +110,7 @@ function StartGame(props) {
           }
           setPlayersDisplay(rows);
           //this sets  length of display before next turn - could also just have a ready? button
-          window.setTimeout(moveTurn, 1000);
+          window.setTimeout(moveTurn, 5000);
         })
     }
 
@@ -135,7 +135,7 @@ function StartGame(props) {
                 {playersPoints.map((player, index) => (
                     <span key={index}>{player}</span>
                 ))}
-                {lastWinner === '' ? '': <p>Winning answer: {lastWinner}</p>}
+                {lastWinner === '' ? '': <><p>Last winner: </p><p dangerouslySetInnerHTML={{__html: lastWinner}}></p></>}
                 <span className="quip">quip</span>
               </div>
             </div>
