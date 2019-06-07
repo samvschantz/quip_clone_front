@@ -9,11 +9,11 @@ Deployed at [https://quip-3171f.firebaseapp.com/](https://quip-3171f.firebaseapp
 
 ## Screenshots
 
-![Waiting room (mobile screenshot)](https://github.com/samvschantz/quip_clone_front/docs/phone_players.png)
+![Waiting room (mobile screenshot)](https://github.com/samvschantz/quip_clone_front/blob/master/docs/phone_players.png)
 
-![One card played](https://github.com/samvschantz/quip_clone_front/docs/played1.png)
+![One card played](https://github.com/samvschantz/quip_clone_front/blob/master/docs/played1.png)
 
-![Judge choosing a card](https://github.com/samvschantz/quip_clone_front/docs/choose_card.png)
+![Judge choosing a card](https://github.com/samvschantz/quip_clone_front/blob/master/docs/choose_card.png)
 
 ## Running the project from Github
 1. Clone the repository.
