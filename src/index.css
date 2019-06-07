@@ -297,6 +297,15 @@ select:-webkit-autofill:focus {
     height: 200px;
   }
 
+  #card-input + button{
+    margin-left:0px;
+    margin-top:20px;
+  }
+
+  .start-game {
+    margin-top:0px;
+  }
+
   @keyframes flip-2-hor-top-1 {
     0% {
       -webkit-transform: translateY(-100%) rotateX(-180deg);
