@@ -1,68 +1,27 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Quips Against People
+## A multi-player game based on [Cards Against Humanity]() and [Quiplash](https://jackboxgames.com/project/quiplash/)
 
-## Available Scripts
+The game will ask a prompt to all players but one. Once all players have answered (or time has run out) the player who has not played will judge the winning card. This continues until one person wins seven times!
 
-In the project directory, you can run:
+The game uses ReactJS on the front end to write to a firebase real-time database.
 
-### `npm start`
+Deployed at [https://quip-3171f.firebaseapp.com/](https://quip-3171f.firebaseapp.com/).
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Screenshots
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+![Waiting room (mobile screenshot)](https://github.com/samvschantz/quip_clone_front/docs/phone_players.png)
 
-### `npm test`
+![One card played](https://github.com/samvschantz/quip_clone_front/docs/played1.png)
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Judge choosing a card](https://github.com/samvschantz/quip_clone_front/docs/choose_card.png)
 
-### `npm run build`
+## Running the project from Github
+1. Clone the repository.
+2. In your terminal window use command "npm install" to install all dependencies.
+3. Create a firebase realtime database and copy the identification information into a .env file in the root of the project.
+4. In the terminal use command "npm run start" to run the app.  
+5. The app will open automatically in your browser.
+6. Open two other tabs in order to test (minimum of 3 players needed).
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## Creator
+[Sam Schantz](https://github.com/samvschantz)
